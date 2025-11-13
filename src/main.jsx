@@ -15,37 +15,55 @@ import Arcade from "./pages/Arcade";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import AdminSignup from "./pages/AdminSignup";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <PageLoaderWrapper>
-      <Routes>
-        {/* ✅ Default route redirects to /landing */}
-        <Route path="/" element={<Landing />} />
+    <Routes>
+      {/* admin not wrapped */}
+      <Route
+        path="/admin"
+        element={
+          <AdminProtectedRoute>
+            <Admin />
+          </AdminProtectedRoute>
+        }
+      />
 
-        {/* Pages */}
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/lesson" element={<Lesson />} />
-        <Route path="/alphabet" element={<Alphabet />} />
-        <Route path="/arcade" element={<Arcade />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/profile" element={<Profile />} />
+      {/* Other pages wrapped with loader */}
+      <Route
+        path="/*"
+        element={
+          <PageLoaderWrapper>
+            <Routes>
+              <Route path="/admin-signup" element={<AdminSignup />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/landing" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
 
-        {/* Protected route */}
-        <Route
-          path="/homepage"
-          element={
-            <ProtectedRoute>
-              <Homepage />
-            </ProtectedRoute>
-          }
-        />
+              <Route
+                path="/homepage"
+                element={
+                  <ProtectedRoute>
+                    <Homepage />
+                  </ProtectedRoute>
+                }
+              />
 
-        {/* Optional 404 fallback */}
-        <Route path="*" element={<Navigate to="/landing" replace />} />
-      </Routes>
-    </PageLoaderWrapper>
+              <Route path="/lesson" element={<Lesson />} />
+              <Route path="/alphabet" element={<Alphabet />} />
+              <Route path="/arcade" element={<Arcade />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/profile" element={<Profile />} />
+
+              {/* fallback */}
+              <Route path="*" element={<Navigate to="/landing" replace />} />
+            </Routes>
+          </PageLoaderWrapper>
+        }
+      />
+    </Routes>
   </BrowserRouter>
 );
