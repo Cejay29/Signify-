@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-import AdminLayouts from "../layouts/AdminLayouts";
+import AdminLayout from "../layouts/AdminLayout";
 
 import LevelList from "../components/LevelList";
 import LevelModal from "../components/LevelModal";
 import LessonModal from "../components/LessonModal";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 import { Plus } from "lucide-react";
 
@@ -54,7 +54,7 @@ export default function AdminLessons() {
   }
 
   return (
-    <AdminLayouts title="Manage Levels">
+    <AdminLayout title="Manage Levels">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           <Plus className="w-7 h-7 text-indigo-600" />
@@ -101,12 +101,12 @@ export default function AdminLessons() {
       )}
 
       {confirmDelete && (
-        <ConfirmDeleteModal
+        <ConfirmDelete
           data={confirmDelete}
           onClose={() => setConfirmDelete(null)}
           onDeleted={loadLevels}
         />
       )}
-    </AdminLayouts>
+    </AdminLayout>
   );
 }
