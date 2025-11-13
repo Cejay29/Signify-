@@ -22,15 +22,11 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute";
 /* ADMIN PAGES */
 import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
-
-/* ⚠ IMPORTANT: Only import AdminSignup if the file exists */
-import AdminSignup from "./pages/AdminSignup"; 
-// ❗ If this file does not exist, delete the line above + the route below
+import AdminSignup from "./pages/AdminSignup";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-
       {/* ADMIN ROUTES */}
       <Route
         path="/admin"
@@ -50,7 +46,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         }
       />
 
-      {/* Admin Signup */}
       <Route path="/admin-signup" element={<AdminSignup />} />
 
       {/* PUBLIC ROUTES */}
@@ -63,6 +58,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route path="/landing" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+
               <Route
                 path="/homepage"
                 element={
@@ -71,17 +67,18 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                   </ProtectedRoute>
                 }
               />
+
               <Route path="/lesson" element={<Lesson />} />
               <Route path="/alphabet" element={<Alphabet />} />
               <Route path="/arcade" element={<Arcade />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/profile" element={<Profile />} />
+
               <Route path="*" element={<Navigate to="/landing" replace />} />
             </Routes>
           </PageLoaderWrapper>
         }
       />
-
     </Routes>
   </BrowserRouter>
 );
