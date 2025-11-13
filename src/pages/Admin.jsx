@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-import AdminLayouts from "../layouts/AdminLayouts";
+
+import AdminLayout from "../layouts/AdminLayout"; // ✅ FIXED IMPORT
 
 import { Activity, Flame, Users, BookOpen, Hand, Cpu } from "lucide-react";
-
 import Chart from "chart.js/auto";
 
 export default function Admin() {
@@ -59,7 +59,6 @@ export default function Admin() {
 
     if (!users) return;
 
-    // XP CHART
     new Chart(xpChartRef.current, {
       type: "bar",
       data: {
@@ -68,7 +67,6 @@ export default function Admin() {
       },
     });
 
-    // STREAK CHART
     new Chart(streakChartRef.current, {
       type: "line",
       data: {
@@ -79,7 +77,7 @@ export default function Admin() {
   }
 
   return (
-    <AdminLayouts title="Dashboard Overview">
+    <AdminLayout title="Dashboard Overview">
       {/* Main Dashboard */}
       <h2 className="text-3xl font-bold flex items-center gap-2 mb-6">
         <Activity className="w-7 h-7 text-indigo-600" />
@@ -104,7 +102,7 @@ export default function Admin() {
           <canvas ref={streakChartRef} height="200"></canvas>
         </CanvasBox>
       </div>
-    </AdminLayouts>
+    </AdminLayout>
   );
 }
 
