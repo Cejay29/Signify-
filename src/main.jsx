@@ -22,6 +22,7 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute";
 /* ADMIN PAGES */
 import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
+import AdminSignup from "./pages/AdminSignup";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
