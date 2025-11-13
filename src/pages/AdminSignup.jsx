@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff, UserPlus, KeyRound } from "lucide-react";
 
 export default function AdminSignup() {
   const navigate = useNavigate();
@@ -10,110 +10,147 @@ export default function AdminSignup() {
 
   const showToast = (msg, color = "bg-red-500") => {
     setToast({ msg, color });
-    setTimeout(() => setToast(""), 2000);
+    setTimeout(() => setToast(""), 2500);
   };
 
   async function handleSignup(e) {
     e.preventDefault();
     setLoading(true);
 
-    const fullName = e.target.fullName.value.trim();
+    const full_name = e.target.fullName.value.trim();
     const email = e.target.email.value.trim();
     const password = e.target.password.value.trim();
+    const admin_code = e.target.adminCode.value.trim();
 
-    // 1️⃣ SIGN UP ADMIN ACCOUNT IN AUTH
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+    const response = await fetch("/api/create-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ full_name, email, password, admin_code }),
     });
 
-    if (error) {
-      showToast(error.message);
-      setLoading(false);
-      return;
-    }
+    const result = await response.json();
 
-    const userId = data?.user?.id;
-
-    if (!userId) {
-      showToast("Signup failed. Please try again.");
-      setLoading(false);
-      return;
-    }
-
-    // 2️⃣ INSERT INTO admin_users TABLE
-    const { error: adminError } = await supabase.from("admin_users").insert({
-      id: userId,
-      email: email,
-      full_name: fullName,
-      role: "admin",
-    });
-
-    if (adminError) {
-      console.error(adminError);
-      showToast("Error saving admin data.");
+    if (!response.ok) {
+      showToast(result.error || "Signup failed");
       setLoading(false);
       return;
     }
 
     showToast("Admin account created!", "bg-green-600");
 
-    // 3️⃣ REDIRECT TO /admin
-    setTimeout(() => navigate("/admin"), 1000);
+    setTimeout(() => {
+      navigate("/admin");
+    }, 1200);
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 p-6">
+      {/* Toast */}
       {toast && (
-        <div className={`fixed top-6 px-6 py-3 rounded-xl text-white ${toast.color}`}>
+        <div
+          className={`fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-white shadow-xl ${toast.color}`}
+        >
           {toast.msg}
         </div>
       )}
 
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6 text-indigo-600">
-          Admin Signup
-        </h2>
+      {/* Card */}
+      <div className="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="flex flex-col items-center mb-6">
+          <div className="bg-indigo-600 p-3 rounded-full shadow-md">
+            <UserPlus className="text-white w-7 h-7" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-[#0c0731] mt-3">
+            Admin Signup
+          </h2>
+          <p className="text-gray-500 text-sm">Create a new admin account</p>
+        </div>
 
-        <form onSubmit={handleSignup} className="flex flex-col gap-4">
+        {/* Form */}
+        <form onSubmit={handleSignup} className="flex flex-col gap-5">
+          {/* Full Name */}
+          <div>
+            <label className="text-sm font-semibold text-gray-700">
+              Full Name
+            </label>
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Juan Dela Cruz"
+              className="border mt-1 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            className="border p-3 rounded-lg"
-            required
-          />
+          {/* Email */}
+          <div>
+            <label className="text-sm font-semibold text-gray-700">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="admin@domain.com"
+              className="border mt-1 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+              required
+            />
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Admin Email"
-            className="border p-3 rounded-lg"
-            required
-          />
+          {/* Password */}
+          <div>
+            <label className="text-sm font-semibold text-gray-700">
+              Password
+            </label>
+            <div className="relative mt-1">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter password"
+                className="border w-full p-3 rounded-xl pr-12 focus:ring-2 focus:ring-indigo-500 outline-none"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+              </button>
+            </div>
+          </div>
 
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            className="border p-3 rounded-lg"
-            required
-          />
+          {/* Admin Secret Code */}
+          <div>
+            <label className="text-sm font-semibold text-gray-700">
+              Admin Secret Code
+            </label>
+            <div className="relative mt-1">
+              <input
+                type="password"
+                name="adminCode"
+                placeholder="Enter Admin Secret Code"
+                className="border w-full p-3 rounded-xl pr-12 focus:ring-2 focus:ring-purple-500 outline-none"
+                required
+              />
+              <KeyRound className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-600 w-5 h-5" />
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Only authorized staff should have this code.
+            </p>
+          </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-lg font-semibold transition-all duration-300 hover:shadow-xl mt-2"
           >
             {loading ? "Creating Admin..." : "Create Admin Account"}
           </button>
 
+          {/* Back */}
           <button
             type="button"
             onClick={() => navigate("/login")}
-            className="text-center text-gray-500 hover:text-gray-700 text-sm mt-2"
+            className="w-full text-center text-gray-600 hover:text-gray-900 text-sm mt-2"
           >
             Back to Login
           </button>
