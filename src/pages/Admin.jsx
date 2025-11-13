@@ -89,7 +89,7 @@ export default function Admin() {
       <main className="flex-1 p-8 ml-0 md:ml-20 xl:ml-[250px] transition-all">
         <h2 className="text-3xl font-bold flex items-center gap-2 mb-6">
           <Activity className="w-7 h-7 text-indigo-600" />
-          Dashboard Overview
+          Dashboard
         </h2>
 
         {/* STATS */}
