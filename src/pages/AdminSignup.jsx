@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, UserPlus, KeyRound } from "lucide-react";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
 
 export default function AdminSignup() {
   const navigate = useNavigate();
@@ -20,12 +20,12 @@ export default function AdminSignup() {
     const full_name = e.target.fullName.value.trim();
     const email = e.target.email.value.trim();
     const password = e.target.password.value.trim();
-    const admin_code = e.target.adminCode.value.trim();
 
+    // Call backend API (NO RATE LIMIT)
     const response = await fetch("/api/create-admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ full_name, email, password, admin_code }),
+      body: JSON.stringify({ full_name, email, password }),
     });
 
     const result = await response.json();
@@ -38,24 +38,20 @@ export default function AdminSignup() {
 
     showToast("Admin account created!", "bg-green-600");
 
-    setTimeout(() => {
-      navigate("/admin");
-    }, 1200);
+    setTimeout(() => navigate("/admin"), 1000);
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 p-6">
-      {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-white shadow-xl ${toast.color}`}
+          className={`fixed top-6 px-6 py-3 rounded-xl text-white shadow-xl ${toast.color}`}
         >
           {toast.msg}
         </div>
       )}
 
-      {/* Card */}
-      <div className="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-md">
+      <div className="bg-white/95 p-8 rounded-2xl shadow-xl w-full max-w-md">
         <div className="flex flex-col items-center mb-6">
           <div className="bg-indigo-600 p-3 rounded-full shadow-md">
             <UserPlus className="text-white w-7 h-7" />
@@ -66,9 +62,7 @@ export default function AdminSignup() {
           <p className="text-gray-500 text-sm">Create a new admin account</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSignup} className="flex flex-col gap-5">
-          {/* Full Name */}
           <div>
             <label className="text-sm font-semibold text-gray-700">
               Full Name
@@ -77,24 +71,22 @@ export default function AdminSignup() {
               type="text"
               name="fullName"
               placeholder="Juan Dela Cruz"
-              className="border mt-1 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="border mt-1 w-full p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
 
-          {/* Email */}
           <div>
             <label className="text-sm font-semibold text-gray-700">Email</label>
             <input
               type="email"
               name="email"
               placeholder="admin@domain.com"
-              className="border mt-1 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="border mt-1 w-full p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="text-sm font-semibold text-gray-700">
               Password
@@ -104,49 +96,27 @@ export default function AdminSignup() {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter password"
-                className="border w-full p-3 rounded-xl pr-12 focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="border w-full p-3 rounded-xl pr-12 outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600"
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
             </div>
           </div>
 
-          {/* Admin Secret Code */}
-          <div>
-            <label className="text-sm font-semibold text-gray-700">
-              Admin Secret Code
-            </label>
-            <div className="relative mt-1">
-              <input
-                type="password"
-                name="adminCode"
-                placeholder="Enter Admin Secret Code"
-                className="border w-full p-3 rounded-xl pr-12 focus:ring-2 focus:ring-purple-500 outline-none"
-                required
-              />
-              <KeyRound className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-600 w-5 h-5" />
-            </div>
-            <p className="text-xs text-gray-400 mt-1">
-              Only authorized staff should have this code.
-            </p>
-          </div>
-
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-lg font-semibold transition-all duration-300 hover:shadow-xl mt-2"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-lg font-semibold mt-2"
           >
             {loading ? "Creating Admin..." : "Create Admin Account"}
           </button>
 
-          {/* Back */}
           <button
             type="button"
             onClick={() => navigate("/login")}
