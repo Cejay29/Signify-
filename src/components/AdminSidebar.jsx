@@ -176,8 +176,8 @@ export default function AdminSidebar({ onLogout }) {
             >
               <span className="flex items-center gap-2 md:gap-0">
                 <MoreHorizontal className="w-5 h-5" />
-                <span className="hidden xl:inline">MORE</span>
-                {mobileOpen && <span className="xl:hidden ml-2">MORE</span>}
+                <span className="hidden xl:inline"> More</span>
+                {mobileOpen && <span className="xl:hidden ml-2"> More</span>}
               </span>
 
               <ChevronDown
@@ -204,8 +204,8 @@ export default function AdminSidebar({ onLogout }) {
                   className="nav-btn text-red-400 hover:bg-[#3a3a55] flex items-center gap-2"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span className="hidden xl:inline">LOGOUT</span>
-                  {mobileOpen && <span className="xl:hidden ml-2">LOGOUT</span>}
+                  <span className="hidden xl:inline"> Logout</span>
+                  {mobileOpen && <span className="xl:hidden ml-2"> Logout</span>}
                 </button>
               </div>
             )}
