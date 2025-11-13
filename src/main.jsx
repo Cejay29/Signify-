@@ -7,7 +7,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Homepage from "./pages/Homepage";
-import Lesson from "./pages/lesson";
+import Lesson from "./pages/Lesson";
 import PageLoaderWrapper from "./components/PageLoaderWrapper";
 import ProtectedRoute from "./components/ProtedtedRoute";
 import Alphabet from "./pages/Alphabet";
