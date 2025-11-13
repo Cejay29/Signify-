@@ -1,16 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-import {
-  Brain,
-  Home,
-  Activity,
-  Flame,
-  Users,
-  BookOpen,
-  Hand,
-  Cpu,
-  LogOut,
-} from "lucide-react";
+import AdminLayout from "../layouts/AdminLayout";
+
+import { Activity, Flame, Users, BookOpen, Hand, Cpu } from "lucide-react";
+
 import Chart from "chart.js/auto";
 
 export default function Admin() {
@@ -85,67 +78,33 @@ export default function Admin() {
     });
   }
 
-  async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = "/login";
-  }
-
   return (
-    <div className="bg-gray-100 flex min-h-screen text-gray-800">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-white shadow-lg flex flex-col">
-        <div className="p-6 border-b flex items-center gap-3">
-          <Brain className="w-6 h-6 text-indigo-600" />
-          <h1 className="text-2xl font-bold text-indigo-600">Signify Admin</h1>
-        </div>
+    <AdminLayout title="Dashboard Overview">
+      {/* Main Dashboard */}
+      <h2 className="text-3xl font-bold flex items-center gap-2 mb-6">
+        <Activity className="w-7 h-7 text-indigo-600" />
+        Dashboard Overview
+      </h2>
 
-        <nav className="flex-1 p-4 space-y-3 text-gray-700">
-          <div className="p-2 rounded bg-indigo-100 text-indigo-600 font-semibold flex items-center gap-2">
-            <Home className="w-5 h-5" /> Dashboard
-          </div>
-        </nav>
+      {/* STATS */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <StatCard Icon={Users} label="Total Users" value={stats.users} />
+        <StatCard Icon={BookOpen} label="Total Lessons" value={stats.lessons} />
+        <StatCard Icon={Hand} label="Total Gestures" value={stats.gestures} />
+        <StatCard Icon={Cpu} label="Model Status" value={stats.modelStatus} />
+      </div>
 
-        <div className="p-4 border-t">
-          <button
-            onClick={logout}
-            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded flex items-center justify-center gap-2"
-          >
-            <LogOut className="w-5 h-5" /> Logout
-          </button>
-        </div>
-      </aside>
+      {/* CHARTS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CanvasBox title="XP Leaderboard" Icon={Activity}>
+          <canvas ref={xpChartRef} height="200"></canvas>
+        </CanvasBox>
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1 p-8 space-y-6">
-        <h2 className="text-3xl font-bold flex items-center gap-2">
-          <Activity className="w-7 h-7 text-indigo-600" />
-          Dashboard Overview
-        </h2>
-
-        {/* STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StatCard Icon={Users} label="Total Users" value={stats.users} />
-          <StatCard
-            Icon={BookOpen}
-            label="Total Lessons"
-            value={stats.lessons}
-          />
-          <StatCard Icon={Hand} label="Total Gestures" value={stats.gestures} />
-          <StatCard Icon={Cpu} label="Model Status" value={stats.modelStatus} />
-        </div>
-
-        {/* CHARTS */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CanvasBox title="XP Leaderboard" Icon={Activity}>
-            <canvas ref={xpChartRef} height="200"></canvas>
-          </CanvasBox>
-
-          <CanvasBox title="Streak Leaderboard" Icon={Flame}>
-            <canvas ref={streakChartRef} height="200"></canvas>
-          </CanvasBox>
-        </div>
-      </main>
-    </div>
+        <CanvasBox title="Streak Leaderboard" Icon={Flame}>
+          <canvas ref={streakChartRef} height="200"></canvas>
+        </CanvasBox>
+      </div>
+    </AdminLayout>
   );
 }
 

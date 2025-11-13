@@ -38,29 +38,28 @@ export default function Login() {
 
     const userId = data.user.id;
 
-    // 🔥 CHECK IF USER IS ADMIN
-    const { data: adminRecord, error: adminError } = await supabase
+    // Check admin_users table
+    const { data: adminData, error: adminError } = await supabase
       .from("admin_users")
-      .select("id")
+      .select("*")
       .eq("id", userId)
-      .single();
+      .maybeSingle(); // 👉 does NOT throw error if no row
 
-    if (adminError && adminError.code !== "PGRST116") {
-      // PGRST116 = no rows found (not an admin) → ignore
-      console.error(adminError);
+    if (adminError) {
+      console.error("Admin check error:", adminError);
     }
 
-    showToastMsg("Login successful!", "bg-green-600");
-
-    // 🟥 IF admin_users contains the user
-    if (adminRecord) {
+    // If admin exists → redirect to /admin
+    if (adminData) {
       console.log("🟦 Admin detected → Redirecting to /admin");
+      showToastMsg("Login successful!", "bg-green-600");
       setTimeout(() => navigate("/admin"), 800);
       return;
     }
 
-    // 🟩 Normal user
+    // If not admin → normal user
     console.log("🟩 Normal user → Redirecting to /homepage");
+    showToastMsg("Login successful!", "bg-green-600");
     setTimeout(() => navigate("/homepage"), 800);
   }
 

@@ -3,25 +3,38 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 
+// Public pages
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+
+// User pages
 import Homepage from "./pages/Homepage";
 import Lesson from "./pages/Lesson";
-import PageLoaderWrapper from "./components/PageLoaderWrapper";
-import ProtectedRoute from "./components/ProtedtedRoute";
 import Alphabet from "./pages/Alphabet";
 import Arcade from "./pages/Arcade";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
+
+// Admin pages
 import Admin from "./pages/Admin";
-import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import AdminLessons from "./pages/AdminLessons";
+import AdminGestures from "./pages/AdminGestures";
+import AdminModels from "./pages/AdminModels";
+import AdminUsers from "./pages/AdminUsers";
 import AdminSignup from "./pages/AdminSignup";
+
+// Wrappers
+import PageLoaderWrapper from "./components/PageLoaderWrapper";
+import ProtectedRoute from "./components/ProtedtedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-      {/* admin not wrapped */}
+      {/* ===========================
+          ADMIN ROUTES (NO LOADER)
+      ============================ */}
       <Route
         path="/admin"
         element={
@@ -31,13 +44,53 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         }
       />
 
-      {/* Other pages wrapped with loader */}
+      <Route
+        path="/admin/lessons"
+        element={
+          <AdminProtectedRoute>
+            <AdminLessons />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/gestures"
+        element={
+          <AdminProtectedRoute>
+            <AdminGestures />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/models"
+        element={
+          <AdminProtectedRoute>
+            <AdminModels />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/users"
+        element={
+          <AdminProtectedRoute>
+            <AdminUsers />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route path="/admin-signup" element={<AdminSignup />} />
+
+      {/* ===========================
+          PUBLIC + USER ROUTES
+          (WRAPPED WITH LOADER)
+      ============================ */}
       <Route
         path="/*"
         element={
           <PageLoaderWrapper>
             <Routes>
-              <Route path="/admin-signup" element={<AdminSignup />} />
               <Route path="/" element={<Landing />} />
               <Route path="/landing" element={<Landing />} />
               <Route path="/login" element={<Login />} />
@@ -58,7 +111,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route path="/shop" element={<Shop />} />
               <Route path="/profile" element={<Profile />} />
 
-              {/* fallback */}
               <Route path="*" element={<Navigate to="/landing" replace />} />
             </Routes>
           </PageLoaderWrapper>
