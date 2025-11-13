@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@mediapipe/hands": "^0.4.1675469240",
-    "@supabase/supabase-js": "^2.80.0",
+    "@supabase/supabase-js": "^2.81.1",
     "@tailwindcss/vite": "^4.1.17",
     "@tensorflow/tfjs": "^4.22.0",
     "canvas-confetti": "^1.9.4",
+    "chart.js": "^4.5.1",
     "lucide-react": "^0.553.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

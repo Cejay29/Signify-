@@ -14,6 +14,7 @@ import Alphabet from "./pages/Alphabet";
 import Arcade from "./pages/Arcade";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
