@@ -1,4 +1,4 @@
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, Settings } from "lucide-react";
 
 export default function LevelList({
   levels,
@@ -6,6 +6,7 @@ export default function LevelList({
   onAddLesson,
   onEditLesson,
   onDelete,
+  onManageContent, // ✅ NEW
 }) {
   return (
     <div className="space-y-6">
@@ -74,14 +75,25 @@ export default function LevelList({
                       <td className="py-2 px-3">{l.xp_reward}</td>
                       <td className="py-2 px-3">{l.gem_reward}</td>
 
-                      <td className="py-2 px-3 text-right">
+                      <td className="py-2 px-3 text-right flex justify-end gap-4">
+                        {/* EDIT LESSON */}
                         <button
                           onClick={() => onEditLesson(level.id, l)}
-                          className="text-blue-600 hover:underline mr-3"
+                          className="text-blue-600 hover:underline"
                         >
                           Edit
                         </button>
 
+                        {/* MANAGE CONTENT — SIGNS & QUESTIONS */}
+                        <button
+                          onClick={() => onManageContent(l.id)}
+                          className="text-indigo-600 hover:underline flex items-center gap-1"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Manage
+                        </button>
+
+                        {/* DELETE LESSON */}
                         <button
                           onClick={() => onDelete("lesson", l.id)}
                           className="text-red-600 hover:underline"
