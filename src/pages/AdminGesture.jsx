@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 import AdminSidebar from "../components/AdminSidebar";
-
 import { Hand, BarChart } from "lucide-react";
-
-// MediaPipe imports
-import { Hands } from "@mediapipe/hands";
-import { Camera } from "@mediapipe/camera_utils";
 
 export default function AdminGestures() {
   const webcamRef = useRef(null);
@@ -15,15 +10,47 @@ export default function AdminGestures() {
   const [label, setLabel] = useState("");
   const [status, setStatus] = useState("");
   const [samples, setSamples] = useState({});
-  const gestureSamples = useRef([]); // store locally
 
-  let currentLandmarks = useRef(null);
+  const gestureSamples = useRef([]);
+  const currentLandmarks = useRef(null);
 
-  /** ===============================
-   *  MEDIA PIPE SETUP
-   *  =============================== */
+  /* ============================================================
+     LOAD MEDIAPIPE FROM CDN (the only method Vercel accepts)
+  ============================================================ */
   useEffect(() => {
-    const hands = new Hands({
+    const scriptHands = document.createElement("script");
+    scriptHands.src =
+      "https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js";
+
+    const scriptCamera = document.createElement("script");
+    scriptCamera.src =
+      "https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js";
+
+    const scriptDrawing = document.createElement("script");
+    scriptDrawing.src =
+      "https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js";
+
+    document.body.appendChild(scriptHands);
+    document.body.appendChild(scriptCamera);
+    document.body.appendChild(scriptDrawing);
+
+    scriptDrawing.onload = () => {
+      initMediaPipe();
+      loadSummary();
+    };
+
+    return () => {
+      document.body.removeChild(scriptHands);
+      document.body.removeChild(scriptCamera);
+      document.body.removeChild(scriptDrawing);
+    };
+  }, []);
+
+  /* ============================================================
+     INIT MEDIAPIPE
+  ============================================================ */
+  function initMediaPipe() {
+    const hands = new window.Hands({
       locateFile: (file) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     });
@@ -45,30 +72,23 @@ export default function AdminGestures() {
       }
     });
 
-    if (webcamRef.current) {
-      try {
-        const cam = new Camera(webcamRef.current, {
-          onFrame: async () =>
-            await hands.send({ image: webcamRef.current }),
-          width: 640,
-          height: 480,
-        });
+    const camera = new window.Camera(webcamRef.current, {
+      onFrame: async () => {
+        await hands.send({ image: webcamRef.current });
+      },
+      width: 640,
+      height: 480,
+    });
 
-        cam.start();
-      } catch (e) {
-        setStatus("⚠️ Camera failed to start.");
-      }
-    }
+    camera.start();
+  }
 
-    loadSummary();
-  }, []);
-
-  /** ===============================
-   *  START CAPTURE
-   *  =============================== */
-  const startCapture = async () => {
+  /* ============================================================
+     START CAPTURE
+  ============================================================ */
+  const startCapture = () => {
     if (!label.trim()) {
-      setStatus("⚠️ Enter a gesture name first.");
+      setStatus("⚠️ Enter a gesture name.");
       return;
     }
 
@@ -88,49 +108,45 @@ export default function AdminGestures() {
 
   const captureSamples = async (gloss) => {
     const duration = 6000;
-    const interval = 200;
+    const intervalMs = 200;
     const end = Date.now() + duration;
 
-    let count = 0;
+    let captured = 0;
 
-    const intervalId = setInterval(async () => {
+    const interval = setInterval(async () => {
       if (Date.now() >= end) {
-        clearInterval(intervalId);
-        setStatus(`✅ Done! Captured ${count} samples.`);
+        clearInterval(interval);
+        setStatus(`✅ Done! Captured ${captured} samples.`);
         loadSummary();
         return;
       }
 
-      if (currentLandmarks.current) {
-        const sample = {
-          gloss,
-          landmarks: currentLandmarks.current,
-        };
-
-        const { error } = await supabase
-          .from("gesture_sample")
-          .insert([sample]);
-
-        if (!error) {
-          gestureSamples.current.push(sample);
-          count++;
-          setStatus(`📸 Capturing... ${count}`);
-        } else {
-          setStatus("❌ Error saving sample.");
-        }
-      } else {
+      if (!currentLandmarks.current) {
         setStatus("⚠️ No hand detected.");
+        return;
       }
-    }, interval);
+
+      const sample = {
+        gloss,
+        landmarks: currentLandmarks.current,
+      };
+
+      const { error } = await supabase.from("gesture_sample").insert([sample]);
+      if (!error) {
+        gestureSamples.current.push(sample);
+        captured++;
+        setStatus(`📸 Capturing... ${captured}`);
+      } else {
+        setStatus("❌ Error saving sample.");
+      }
+    }, intervalMs);
   };
 
-  /** ===============================
-   *  LOAD SUMMARY
-   *  =============================== */
+  /* ============================================================
+     LOAD SUMMARY
+  ============================================================ */
   const loadSummary = async () => {
-    const { data } = await supabase
-      .from("gesture_sample")
-      .select("gloss");
+    const { data } = await supabase.from("gesture_sample").select("gloss");
 
     if (!data) return;
 
@@ -142,19 +158,18 @@ export default function AdminGestures() {
     setSamples(grouped);
   };
 
-  /** ===============================
-   *  DOWNLOAD JSON
-   *  =============================== */
+  /* ============================================================
+     DOWNLOAD JSON
+  ============================================================ */
   const downloadJSON = () => {
     if (gestureSamples.current.length === 0) {
-      alert("No samples yet!");
+      alert("No samples collected yet!");
       return;
     }
 
-    const blob = new Blob(
-      [JSON.stringify(gestureSamples.current, null, 2)],
-      { type: "application/json" }
-    );
+    const blob = new Blob([JSON.stringify(gestureSamples.current, null, 2)], {
+      type: "application/json",
+    });
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -162,17 +177,17 @@ export default function AdminGestures() {
     link.click();
   };
 
-  /** ===============================
-   *  LOGOUT
-   *  =============================== */
+  /* ============================================================
+     LOGOUT
+  ============================================================ */
   const logout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/login";
   };
 
-  /** ===============================
-   *  RENDER UI
-   *  =============================== */
+  /* ============================================================
+     UI
+  ============================================================ */
   return (
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar onLogout={logout} />
@@ -231,16 +246,16 @@ export default function AdminGestures() {
               Sample Summary
             </h3>
 
-            <ul className="text-sm text-gray-700">
+            <ul className="text-sm">
               {Object.keys(samples).length === 0 ? (
                 <li className="text-gray-500">No samples yet.</li>
               ) : (
-                Object.entries(samples).map(([g, count]) => (
+                Object.entries(samples).map(([gloss, count]) => (
                   <li
-                    key={g}
+                    key={gloss}
                     className="flex justify-between border-b py-1"
                   >
-                    <span>{g}</span>
+                    <span>{gloss}</span>
                     <span className="font-semibold text-indigo-600">
                       {count}
                     </span>
