@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-
-import AdminLayout from "../layouts/AdminLayout"; // ✅ FIXED IMPORT
+import AdminSidebar from "../components/AdminSidebar"; // ✅ USE SIDEBAR ONLY
 
 import { Activity, Flame, Users, BookOpen, Hand, Cpu } from "lucide-react";
 import Chart from "chart.js/auto";
@@ -76,33 +75,47 @@ export default function Admin() {
     });
   }
 
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = "/login";
+  }
+
   return (
-    <AdminLayout title="Dashboard Overview">
-      {/* Main Dashboard */}
-      <h2 className="text-3xl font-bold flex items-center gap-2 mb-6">
-        <Activity className="w-7 h-7 text-indigo-600" />
-        Dashboard Overview
-      </h2>
+    <div className="flex min-h-screen bg-gray-100">
+      {/* SIDEBAR */}
+      <AdminSidebar onLogout={logout} />
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <StatCard Icon={Users} label="Total Users" value={stats.users} />
-        <StatCard Icon={BookOpen} label="Total Lessons" value={stats.lessons} />
-        <StatCard Icon={Hand} label="Total Gestures" value={stats.gestures} />
-        <StatCard Icon={Cpu} label="Model Status" value={stats.modelStatus} />
-      </div>
+      {/* MAIN CONTENT */}
+      <main className="flex-1 p-8 ml-0 md:ml-20 xl:ml-[250px] transition-all">
+        <h2 className="text-3xl font-bold flex items-center gap-2 mb-6">
+          <Activity className="w-7 h-7 text-indigo-600" />
+          Dashboard Overview
+        </h2>
 
-      {/* CHARTS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CanvasBox title="XP Leaderboard" Icon={Activity}>
-          <canvas ref={xpChartRef} height="200"></canvas>
-        </CanvasBox>
+        {/* STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <StatCard Icon={Users} label="Total Users" value={stats.users} />
+          <StatCard
+            Icon={BookOpen}
+            label="Total Lessons"
+            value={stats.lessons}
+          />
+          <StatCard Icon={Hand} label="Total Gestures" value={stats.gestures} />
+          <StatCard Icon={Cpu} label="Model Status" value={stats.modelStatus} />
+        </div>
 
-        <CanvasBox title="Streak Leaderboard" Icon={Flame}>
-          <canvas ref={streakChartRef} height="200"></canvas>
-        </CanvasBox>
-      </div>
-    </AdminLayout>
+        {/* CHARTS */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <CanvasBox title="XP Leaderboard" Icon={Activity}>
+            <canvas ref={xpChartRef} height="200"></canvas>
+          </CanvasBox>
+
+          <CanvasBox title="Streak Leaderboard" Icon={Flame}>
+            <canvas ref={streakChartRef} height="200"></canvas>
+          </CanvasBox>
+        </div>
+      </main>
+    </div>
   );
 }
 
