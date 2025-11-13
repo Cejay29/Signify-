@@ -23,7 +23,7 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
 import AdminSignup from "./pages/AdminSignup";
-import AdminGesture from "./pages/AdminGesture.jsx";
+import AdminGestures from "./pages/AdminGesture.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
