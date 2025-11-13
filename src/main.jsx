@@ -13,7 +13,7 @@ import ProtectedRoute from "./components/ProtedtedRoute";
 import Alphabet from "./pages/Alphabet";
 import Arcade from "./pages/Arcade";
 import Shop from "./pages/Shop";
-import Profile from "./pages/profile";
+import Profile from "./pages/Profile";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
