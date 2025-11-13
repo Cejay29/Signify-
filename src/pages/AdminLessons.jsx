@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ NEW
 import { supabase } from "../lib/supabaseClient";
 
 import AdminLayout from "../layouts/AdminLayout";
@@ -11,6 +12,8 @@ import ConfirmDelete from "../components/ConfirmDelete";
 import { Plus } from "lucide-react";
 
 export default function AdminLessons() {
+  const navigate = useNavigate(); // ✅ NEW
+
   const [levels, setLevels] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -53,6 +56,11 @@ export default function AdminLessons() {
     setConfirmDelete({ type, id });
   }
 
+  /** ✅ NEW: navigate to lesson-content screen */
+  function handleManageContent(lessonId) {
+    navigate(`/admin/lesson-content?lesson_id=${lessonId}`);
+  }
+
   return (
     <AdminLayout title="Manage Levels">
       <div className="flex justify-between items-center mb-6">
@@ -79,6 +87,7 @@ export default function AdminLessons() {
           onAddLesson={openLessonModal}
           onEditLesson={openLessonModal}
           onDelete={openDelete}
+          onManageContent={handleManageContent} // ✅ NEW
         />
       )}
 

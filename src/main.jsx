@@ -24,6 +24,7 @@ import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
 import AdminSignup from "./pages/AdminSignup";
 import AdminGestures from "./pages/AdminGesture.jsx";
+import AdminLessonContent from "./pages/AdminLessonContent.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -43,6 +44,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         element={
           <AdminProtectedRoute>
             <AdminLessons />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/lesson-content"
+        element={
+          <AdminProtectedRoute>
+            <AdminLessonContent />
           </AdminProtectedRoute>
         }
       />
