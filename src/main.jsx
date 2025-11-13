@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 
+/* PUBLIC PAGES */
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -13,10 +14,12 @@ import Arcade from "./pages/Arcade";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
 
+/* WRAPPERS */
 import PageLoaderWrapper from "./components/PageLoaderWrapper";
 import ProtectedRoute from "./components/ProtedtedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
+/* ADMIN PAGES */
 import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
 import AdminGestures from "./pages/AdminGestures";
@@ -27,7 +30,9 @@ import AdminSignup from "./pages/AdminSignup";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-      {/* ADMIN ROUTES — DO NOT WRAP IN LOADER */}
+      {/* =========================
+          ADMIN ROUTES (NO LOADER)
+      ========================== */}
       <Route
         path="/admin"
         element={
@@ -73,10 +78,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         }
       />
 
-      {/* Admin Signup (Public) */}
+      {/* Admin signup (public) */}
       <Route path="/admin-signup" element={<AdminSignup />} />
 
-      {/* PUBLIC ROUTES (all wrapped by loader) */}
+      {/* =========================
+          PUBLIC + USER ROUTES
+          (WRAPPED IN LOADER)
+      ========================== */}
       <Route
         path="/*"
         element={
