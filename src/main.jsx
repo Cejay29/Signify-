@@ -3,12 +3,9 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 
-// Public pages
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
-// User pages
 import Homepage from "./pages/Homepage";
 import Lesson from "./pages/Lesson";
 import Alphabet from "./pages/Alphabet";
@@ -16,7 +13,10 @@ import Arcade from "./pages/Arcade";
 import Shop from "./pages/Shop";
 import Profile from "./pages/Profile";
 
-// Admin pages
+import PageLoaderWrapper from "./components/PageLoaderWrapper";
+import ProtectedRoute from "./components/ProtedtedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+
 import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
 import AdminGestures from "./pages/AdminGestures";
@@ -24,17 +24,10 @@ import AdminModels from "./pages/AdminModels";
 import AdminUsers from "./pages/AdminUsers";
 import AdminSignup from "./pages/AdminSignup";
 
-// Wrappers
-import PageLoaderWrapper from "./components/PageLoaderWrapper";
-import ProtectedRoute from "./components/ProtedtedRoute";
-import AdminProtectedRoute from "./components/AdminProtectedRoute";
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-      {/* ===========================
-          ADMIN ROUTES (NO LOADER)
-      ============================ */}
+      {/* ADMIN ROUTES — DO NOT WRAP IN LOADER */}
       <Route
         path="/admin"
         element={
@@ -80,12 +73,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         }
       />
 
+      {/* Admin Signup (Public) */}
       <Route path="/admin-signup" element={<AdminSignup />} />
 
-      {/* ===========================
-          PUBLIC + USER ROUTES
-          (WRAPPED WITH LOADER)
-      ============================ */}
+      {/* PUBLIC ROUTES (all wrapped by loader) */}
       <Route
         path="/*"
         element={
@@ -111,6 +102,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route path="/shop" element={<Shop />} />
               <Route path="/profile" element={<Profile />} />
 
+              {/* fallback */}
               <Route path="*" element={<Navigate to="/landing" replace />} />
             </Routes>
           </PageLoaderWrapper>

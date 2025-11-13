@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-import AdminLayout from "../layouts/AdminLayout";
+import AdminLayouts from "../layouts/AdminLayouts";
 
 import LevelList from "../components/LevelList";
 import LevelModal from "../components/LevelModal";
@@ -54,7 +54,7 @@ export default function AdminLessons() {
   }
 
   return (
-    <AdminLayout title="Manage Levels">
+    <AdminLayouts title="Manage Levels">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           <Plus className="w-7 h-7 text-indigo-600" />
@@ -107,6 +107,6 @@ export default function AdminLessons() {
           onDeleted={loadLevels}
         />
       )}
-    </AdminLayout>
+    </AdminLayouts>
   );
 }
