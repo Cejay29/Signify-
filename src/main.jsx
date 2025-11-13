@@ -23,6 +23,7 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import Admin from "./pages/Admin";
 import AdminLessons from "./pages/AdminLessons";
 import AdminSignup from "./pages/AdminSignup";
+import AdminGesture from "./pages/AdminGesture.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -42,6 +43,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         element={
           <AdminProtectedRoute>
             <AdminLessons />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/gestures"
+        element={
+          <AdminProtectedRoute>
+            <AdminGestures />
           </AdminProtectedRoute>
         }
       />
