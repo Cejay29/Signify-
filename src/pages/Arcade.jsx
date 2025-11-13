@@ -1,27 +1,21 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-import * as tf from "@tensorflow/tfjs";
 import { Hands } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
-import {
-  Trophy,
-  PlayCircle,
-  Timer,
-  Star,
-  Flame,
-  Target,
-  Gamepad2,
-} from "lucide-react";
+import useGestureModel from "../hooks/useGestureModel";
+import { Trophy, Timer, Star, Flame, Target, Gamepad2 } from "lucide-react";
 
 export default function Arcade() {
-  const [session, setSession] = useState(null);
-  const [model, setModel] = useState(null);
-  const [labels, setLabels] = useState([]);
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [filter, setFilter] = useState("daily");
-  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+  // 🧠 Use your original gesture model hook
+  const {
+    model,
+    labels,
+    loading: modelLoading,
+    error: modelError,
+    version,
+  } = useGestureModel();
 
-  // Arcade states
+  const [session, setSession] = useState(null);
   const [arcadeActive, setArcadeActive] = useState(false);
   const [arcadeTarget, setArcadeTarget] = useState("—");
   const [arcadeScore, setArcadeScore] = useState(0);
@@ -32,46 +26,29 @@ export default function Arcade() {
   const [finalScore, setFinalScore] = useState(0);
   const [finalStreak, setFinalStreak] = useState(0);
   const [rewards, setRewards] = useState({ xp: 0, gems: 0 });
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [filter, setFilter] = useState("daily");
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
-  // DOM refs
   const videoRef = useRef(null);
   const timeBarRef = useRef(null);
   const detectedRef = useRef(null);
-
-  let hands = useRef(null);
-  let camera = useRef(null);
-  let predictionBuffer = useRef([]);
-  let targetPool = useRef([]);
-  let timerInterval = useRef(null);
-  let hitCooldown = useRef(false);
+  const handsRef = useRef(null);
+  const cameraRef = useRef(null);
+  const timerRef = useRef(null);
+  const hitCooldown = useRef(false);
 
   /* -------------------------------------------------------------
-     INIT: Auth + Model
+     INIT
   ------------------------------------------------------------- */
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) window.location.href = "/landing";
       else setSession(data.session);
     });
-    loadModel();
     loadLeaderboard("daily");
     return () => stopCamera();
   }, []);
-
-  async function loadModel() {
-    try {
-      const modelUrl = "/model/model.json";
-      const labelsUrl = "/model/labels.json";
-      const mdl = await tf.loadLayersModel(modelUrl);
-      const res = await fetch(labelsUrl);
-      const lbls = await res.json();
-      setModel(mdl);
-      setLabels(lbls);
-      console.log("✅ Model loaded:", lbls.length, "labels");
-    } catch (e) {
-      console.error("Failed to load model:", e);
-    }
-  }
 
   /* -------------------------------------------------------------
      CAMERA + HANDS
@@ -80,26 +57,27 @@ export default function Arcade() {
     try {
       stopCamera();
       const video = videoRef.current;
-      const h = new Hands({
+      const hands = new Hands({
         locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`,
       });
-      h.setOptions({
+      hands.setOptions({
         maxNumHands: 1,
         modelComplexity: 1,
         minDetectionConfidence: 0.7,
         minTrackingConfidence: 0.7,
       });
-      h.onResults(onResults);
-      hands.current = h;
+      hands.onResults(onResults);
+      handsRef.current = hands;
 
-      camera.current = new Camera(video, {
+      const camera = new Camera(video, {
         onFrame: async () => {
-          if (video.readyState >= 2) await h.send({ image: video });
+          if (video.readyState >= 2) await hands.send({ image: video });
         },
         width: 520,
         height: 380,
       });
-      camera.current.start();
+      cameraRef.current = camera;
+      camera.start();
       setArcadeStatus("🎮 Game on! Show the target sign.");
     } catch (err) {
       console.error("Camera error:", err);
@@ -109,9 +87,9 @@ export default function Arcade() {
 
   function stopCamera() {
     try {
-      camera.current?.stop?.();
+      cameraRef.current?.stop?.();
     } catch {}
-    camera.current = null;
+    cameraRef.current = null;
   }
 
   function normalize(landmarks) {
@@ -121,19 +99,23 @@ export default function Arcade() {
   }
 
   /* -------------------------------------------------------------
-     ARCADE GAME LOGIC
+     GAME LOGIC
   ------------------------------------------------------------- */
   function startArcade() {
+    if (modelLoading) {
+      alert("Please wait — model is still loading.");
+      return;
+    }
     if (!model) {
-      alert("Model not loaded yet!");
+      alert("❌ Model not loaded yet!");
       return;
     }
     resetArcade();
-    setArcadeStatus("Starting camera…");
+    setArcadeStatus(`Starting camera (Model ${version || "latest"})…`);
     startCamera();
     setArcadeActive(true);
     setArcadeTarget(randomTarget());
-    timerInterval.current = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setArcadeTime((t) => {
         if (t <= 1) {
           endArcade("⏳ Time’s up!");
@@ -146,7 +128,7 @@ export default function Arcade() {
   }
 
   function resetArcade() {
-    clearInterval(timerInterval.current);
+    clearInterval(timerRef.current);
     setArcadeTime(30);
     setArcadeScore(0);
     setArcadeStreak(0);
@@ -155,20 +137,14 @@ export default function Arcade() {
   }
 
   function updateTimeBar(time) {
-    if (timeBarRef.current) {
-      timeBarRef.current.style.width = Math.max(0, (time / 30) * 100) + "%";
-    }
+    if (timeBarRef.current)
+      timeBarRef.current.style.width = `${(time / 30) * 100}%`;
   }
 
   function randomTarget() {
     const pool =
-      targetPool.current.length > 0
-        ? targetPool.current
-        : labels.length > 0
-        ? labels
-        : "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    const idx = Math.floor(Math.random() * pool.length);
-    return pool[idx];
+      labels.length > 0 ? labels : "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
   function addScore() {
@@ -183,7 +159,7 @@ export default function Arcade() {
 
   async function endArcade(reason) {
     setArcadeActive(false);
-    clearInterval(timerInterval.current);
+    clearInterval(timerRef.current);
     stopCamera();
     setArcadeStatus(reason);
     setFinalScore(arcadeScore);
@@ -194,15 +170,14 @@ export default function Arcade() {
   }
 
   /* -------------------------------------------------------------
-     HANDS ONRESULTS CALLBACK
+     DETECTION
   ------------------------------------------------------------- */
   async function onResults(results) {
-    if (!arcadeActive || !model) return;
-    if (!results.multiHandLandmarks?.length) return;
+    if (!arcadeActive || !model || !results.multiHandLandmarks?.length) return;
     const input = normalize(results.multiHandLandmarks[0]);
     if (!input) return;
 
-    const pred = model.predict(tf.tensor([input]));
+    const pred = model.predict(window.tf.tensor([input]));
     const arr = await pred.array();
     const maxIdx = arr[0].indexOf(Math.max(...arr[0]));
     const detected = labels[maxIdx] || "—";
@@ -213,9 +188,7 @@ export default function Arcade() {
       hitCooldown.current = true;
       addScore();
       setArcadeTarget(randomTarget());
-      setTimeout(() => {
-        hitCooldown.current = false;
-      }, 600);
+      setTimeout(() => (hitCooldown.current = false), 600);
     }
   }
 
@@ -278,7 +251,7 @@ export default function Arcade() {
     <div className="flex bg-[#1C1B2E] text-white min-h-screen">
       {/* Sidebar */}
       <aside className="w-[250px] bg-[#14142B] border-r border-[#2a2a3c] p-6">
-        <h2 className="text-4xl font-extrabold text-[#FFC400] text-center tracking-wide">
+        <h2 className="text-4xl font-extrabold text-[#FFC400] text-center">
           Signify
         </h2>
         <nav className="flex flex-col gap-3 mt-4">
@@ -316,10 +289,22 @@ export default function Arcade() {
           <h1 className="text-3xl font-extrabold text-[#27E1C1] flex items-center gap-2">
             <Gamepad2 className="w-7 h-7" /> Arcade Mode
           </h1>
+
+          {modelLoading ? (
+            <span className="text-gray-400">Loading model...</span>
+          ) : modelError ? (
+            <span className="text-red-400">Model error: {modelError}</span>
+          ) : (
+            <span className="text-sm text-gray-400">
+              Model {version ? `v${version}` : "Loaded"} ({labels.length}{" "}
+              labels)
+            </span>
+          )}
+
           <div className="flex gap-2">
             <button
               onClick={startArcade}
-              disabled={arcadeActive}
+              disabled={arcadeActive || modelLoading}
               className="bg-[#27E1C1] text-black font-bold px-4 py-2 rounded-lg"
             >
               Start
@@ -334,6 +319,7 @@ export default function Arcade() {
           </div>
         </header>
 
+        {/* Camera */}
         <div className="flex flex-col items-center">
           <video
             ref={videoRef}
@@ -341,14 +327,12 @@ export default function Arcade() {
             playsInline
             className="rounded-xl border-2 border-[#C5CAFF] w-[520px] bg-black shadow-xl"
           ></video>
-
           <div
             ref={detectedRef}
             className="mt-4 text-lg text-[#27E1C1] font-bold"
           >
             —
           </div>
-
           <div className="mt-4 flex gap-4">
             <div className="hud-pill flex gap-2 items-center">
               <Timer className="w-4 h-4 text-[#27E1C1]" /> Time: {arcadeTime}s
@@ -365,7 +349,6 @@ export default function Arcade() {
               {arcadeTarget}
             </div>
           </div>
-
           <div className="w-full max-w-md mt-4 bg-[#14142B] border border-[#2a2a3c] rounded-full h-3 overflow-hidden">
             <div
               ref={timeBarRef}
@@ -373,96 +356,8 @@ export default function Arcade() {
               style={{ width: "100%" }}
             ></div>
           </div>
-
           <p className="text-gray-400 text-sm mt-3">{arcadeStatus}</p>
         </div>
-
-        {/* Leaderboard */}
-        <section className="mt-10 bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-6">
-          <h3 className="text-2xl font-semibold text-[#C5CAFF] flex items-center gap-2 mb-4">
-            <Trophy className="w-6 h-6" /> Leaderboard
-          </h3>
-
-          <div className="flex gap-3 mb-6">
-            {["daily", "weekly", "all"].map((t) => (
-              <button
-                key={t}
-                onClick={() => {
-                  setFilter(t);
-                  loadLeaderboard(t);
-                }}
-                className={`lb-tab ${filter === t ? "active" : ""}`}
-              >
-                {t.toUpperCase()}
-              </button>
-            ))}
-          </div>
-
-          {loadingLeaderboard ? (
-            <p className="text-gray-400 text-center py-4">Loading…</p>
-          ) : (
-            <table className="leaderboard-table w-full text-sm">
-              <thead className="bg-[#2a2a3c] text-[#C5CAFF]">
-                <tr>
-                  <th>#</th>
-                  <th>Player</th>
-                  <th>Score</th>
-                  <th>Streak</th>
-                  <th>XP</th>
-                  <th>Gems</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboard.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-[#3a3a55] text-center hover:bg-[#2a2a3c]"
-                  >
-                    <td>{i + 1}</td>
-                    <td>{row.users?.username || "Player"}</td>
-                    <td>{row.score}</td>
-                    <td>{row.max_streak}</td>
-                    <td>{row.xp_earned}</td>
-                    <td>{row.gems_earned}</td>
-                    <td>{new Date(row.created_at).toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
-
-        {/* Finish Modal */}
-        {showModal && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-            <div className="bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-8 w-[350px] text-center shadow-2xl">
-              <h2 className="text-3xl font-extrabold text-[#27E1C1] mb-4">
-                Arcade Finished!
-              </h2>
-              <p className="text-gray-300 mb-3">{arcadeStatus}</p>
-              <div className="bg-[#14142B] rounded-xl p-4 border border-[#2a2a3c] mb-5">
-                <p className="text-lg font-bold text-[#FFC400]">
-                  Final Score: {finalScore}
-                </p>
-                <p className="text-lg font-bold text-[#FFC400]">
-                  Max Streak: {finalStreak}
-                </p>
-              </div>
-              <div className="mb-5">
-                <p className="text-[#27E1C1] font-semibold">Rewards Earned:</p>
-                <p className="text-gray-200">+{rewards.xp} XP</p>
-                <p className="text-gray-200">+{rewards.gems} Gems</p>
-              </div>
-              <button
-                onClick={() => setShowModal(false)}
-                className="bg-[#27E1C1] text-black font-bold px-5 py-2 rounded-lg hover:bg-[#1dd4b4]"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
