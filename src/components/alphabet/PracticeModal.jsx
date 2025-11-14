@@ -150,7 +150,7 @@ export default function PracticeModal({ open, onClose, target, onPickTarget }) {
               ref={camRef}
               autoPlay
               playsInline
-              className="rounded-xl w-full h-[260px] sm:h-[220px] md:h-[200px] object-cover border border-[#C5CAFF] bg-black"
+              className="rounded-xl w-full h-[260px] sm:h-[220px] md:h-[360] object-cover border border-[#C5CAFF] bg-black"
             />
 
             {/* Buttons */}
