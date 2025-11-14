@@ -176,7 +176,6 @@ export default function Login() {
               onClick={() => setForgotOpen(true)}
               className="text-sm text-gray-300 hover:text-white"
             >
-              Forgot password?
             </button>
 
             <button
