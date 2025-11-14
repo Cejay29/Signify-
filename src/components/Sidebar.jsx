@@ -31,11 +31,6 @@ export default function Sidebar({ onLogout }) {
       icon: <Type className="w-5 h-5" />,
       path: "/alphabet",
     },
-    {
-      label: "ARCADE",
-      icon: <Gamepad2 className="w-5 h-5" />,
-      path: "/arcade",
-    },
     { label: "SHOP", icon: <ShoppingBag className="w-5 h-5" />, path: "/shop" },
     { label: "PROFILE", icon: <User className="w-5 h-5" />, path: "/profile" },
   ];
