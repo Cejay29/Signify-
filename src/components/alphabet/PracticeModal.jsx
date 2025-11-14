@@ -174,16 +174,16 @@ export default function PracticeModal({ open, onClose, target, onPickTarget }) {
 
             {/* Detected Sign */}
             {running && (
-              <div className="mt-3 text-sm">
+              <div className="text-white mt-3 text-sm">
                 Detected:{" "}
                 <span className="font-semibold">{detected ?? "—"}</span>
                 {target ? (
                   detected === target ? (
                     <span className="text-green-400 font-bold ml-2">
-                      ✅ Correct
+                       Correct
                     </span>
                   ) : (
-                    <span className="text-red-400 font-bold ml-2">❌</span>
+                    <span className="text-red-400 font-bold ml-2"></span>
                   )
                 ) : null}
                 {detected === target && target && (
