@@ -97,7 +97,7 @@ export default function Signup() {
         {/* Top Left */}
         <img
           src="/bg/upper-left.png"
-          className="absolute top-0 left-0 
+          className="absolute top--20 left-0 
           w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
         />
 
