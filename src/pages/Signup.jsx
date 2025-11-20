@@ -93,6 +93,44 @@ export default function Signup() {
 
   return (
     <div className="bg-[#5AB3FF]/20 min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {/* Top Left */}
+        <img
+          src="/bg/shape-top-left.png"
+          className="absolute top-0 left-0 
+          w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
+        />
+
+        {/* Top Right */}
+        <img
+          src="/bg/shape-top-right.png"
+          className="absolute top-0 right-0
+          w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
+        />
+
+        {/* Bottom Left */}
+        <img
+          src="/bg/shape-bottom-left.png"
+          className="absolute bottom-0 left-0
+          w-40 sm:w-56 md:w-72 lg:w-96 opacity-70"
+        />
+
+        {/* Bottom Right */}
+        <img
+          src="/bg/shape-bottom-kanan.png"
+          className="absolute bottom-0 right-0
+          w-28 sm:w-40 md:w-56 lg:w-72 opacity-30"
+        />
+
+        {/* Center Mascot Shape */}
+        <img
+          src="/bg/shape-center.png"
+          className="absolute top-[150px] left-[25%]
+          w-60 sm:w-72 md:w-[360px] lg:w-[480px] xl:w-[520px]
+          rotate-[-8deg] opacity-70"
+        />
+      </div>
+      
       {/* Toast */}
       {toast && (
         <div
