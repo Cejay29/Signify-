@@ -105,7 +105,7 @@ export default function Signup() {
         <img
           src="/bg/upper-right.png"
           className="absolute top-0 right-0
-          w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
+  w-48 sm:w-60 md:w-80 lg:w-[380px] xl:w-[420px]"
         />
 
         {/* Bottom Left */}
@@ -117,9 +117,9 @@ export default function Signup() {
 
         {/* Bottom Right */}
         <img
-          src="/bg/bottom-right.png"
+          src="/bg/lower-right.png"
           className="absolute bottom-0 right-0
-          w-28 sm:w-40 md:w-56 lg:w-72 opacity-30"
+        w-48 sm:w-72 md:w-96 lg:w-[420px] xl:w-[480px] opacity-30"
         />
 
         {/* Center Mascot Shape */}
