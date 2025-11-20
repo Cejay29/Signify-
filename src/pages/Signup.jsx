@@ -92,7 +92,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="bg-[#5AB3FF]/20 min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
+    <div className="bg-[#450693]/20 min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Top Left */}
         <img
@@ -130,7 +130,7 @@ export default function Signup() {
           rotate-[-8deg] opacity-70"
         />
       </div>
-      
+
       {/* Toast */}
       {toast && (
         <div
@@ -143,21 +143,21 @@ export default function Signup() {
       {/* Close Button */}
       <button
         onClick={() => navigate("/")}
-        className="fixed top-4 left-4 text-[#5AB3FF] text-3xl z-50 hover:text-[#9C6BFF] transition"
+        className="fixed top-4 left-4 text-[#FFC400] text-3xl z-50 hover:text-[#FF3F7F] transition"
       >
         ✕
       </button>
 
       <div className="z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl px-4 py-6 sm:py-8 mx-auto">
-        <div className="bg-white text-black p-5 sm:p-6 md:p-8 rounded-2xl shadow-xl border border-[#FFE873]">
-          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#5AB3FF]">
+        <div className="bg-white text-black p-5 sm:p-6 md:p-8 rounded-2xl shadow-xl border-2 border-[#FFC400]">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#8C00FF]">
             Sign Up
           </h1>
 
           <form onSubmit={handleSignup} className="flex flex-col gap-4">
-            {/* First + Last Name */}
+            {/* First & Last Name */}
             <div>
-              <label className="text-sm font-medium text-[#160c52]">
+              <label className="text-sm font-medium text-[#450693]">
                 First & Last Name
               </label>
               <div className="flex gap-2 mt-1">
@@ -166,21 +166,21 @@ export default function Signup() {
                   placeholder="First name"
                   required
                   onChange={update}
-                  className="p-3 border rounded-xl w-1/2 focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition"
+                  className="p-3 border rounded-xl w-1/2 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
                 />
                 <input
                   name="lastName"
                   placeholder="Last name"
                   required
                   onChange={update}
-                  className="p-3 border rounded-xl w-1/2 focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition"
+                  className="p-3 border rounded-xl w-1/2 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
                 />
               </div>
             </div>
 
             {/* Birthday */}
             <div>
-              <label className="text-sm font-medium text-[#160c52]">
+              <label className="text-sm font-medium text-[#450693]">
                 Birthday
               </label>
               <input
@@ -188,20 +188,20 @@ export default function Signup() {
                 name="birthday"
                 required
                 onChange={update}
-                className="p-3 border rounded-xl w-full mt-1 focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition"
+                className="p-3 border rounded-xl w-full mt-1 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
               />
             </div>
 
             {/* Gender */}
             <div>
-              <label className="text-sm font-medium text-[#160c52]">
+              <label className="text-sm font-medium text-[#450693]">
                 Gender
               </label>
               <select
                 name="gender"
                 required
                 onChange={update}
-                className="p-3 border rounded-xl w-full mt-1 bg-white focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition"
+                className="p-3 border rounded-xl w-full mt-1 bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
               >
                 <option value="">Select gender</option>
                 <option value="Female">Female</option>
@@ -212,7 +212,7 @@ export default function Signup() {
 
             {/* Email */}
             <div>
-              <label className="text-sm font-medium text-[#160c52]">
+              <label className="text-sm font-medium text-[#450693]">
                 Email
               </label>
               <input
@@ -221,13 +221,13 @@ export default function Signup() {
                 placeholder="Email"
                 required
                 onChange={update}
-                className="p-3 border rounded-xl w-full mt-1 focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition"
+                className="p-3 border rounded-xl w-full mt-1 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-sm font-medium text-[#160c52]">
+              <label className="text-sm font-medium text-[#450693]">
                 Password
               </label>
 
@@ -238,13 +238,13 @@ export default function Signup() {
                   placeholder="Password"
                   required
                   onChange={update}
-                  className="p-3 border rounded-xl w-full pr-12 focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition"
+                  className="p-3 border rounded-xl w-full pr-12 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
                 />
 
                 <button
                   type="button"
                   onClick={() => setPwVisible(!pwVisible)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#5AB3FF]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8C00FF]"
                 >
                   {pwVisible ? <EyeOff /> : <Eye />}
                 </button>
@@ -273,7 +273,7 @@ export default function Signup() {
 
             {/* Confirm Password */}
             <div>
-              <label className="text-sm font-medium text-[#160c52]">
+              <label className="text-sm font-medium text-[#450693]">
                 Confirm Password
               </label>
 
@@ -284,7 +284,7 @@ export default function Signup() {
                   placeholder="Confirm password"
                   required
                   onChange={update}
-                  className={`p-3 border rounded-xl w-full pr-12 focus:border-[#9C6BFF] focus:ring-2 focus:ring-[#9C6BFF]/40 transition ${
+                  className={`p-3 border rounded-xl w-full pr-12 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition ${
                     form.confirm
                       ? form.confirm === form.password
                         ? "border-green-600"
@@ -296,7 +296,7 @@ export default function Signup() {
                 <button
                   type="button"
                   onClick={() => setPw2Visible(!pw2Visible)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#5AB3FF]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8C00FF]"
                 >
                   {pw2Visible ? <EyeOff /> : <Eye />}
                 </button>
@@ -315,7 +315,7 @@ export default function Signup() {
               disabled={!canSubmit}
               className={`mt-2 py-3 rounded-xl font-semibold text-white shadow-lg transition ${
                 canSubmit
-                  ? "bg-[#5AB3FF] hover:bg-[#9C6BFF]"
+                  ? "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-90"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
@@ -324,7 +324,7 @@ export default function Signup() {
 
             <Link
               to="/login"
-              className="text-center text-[#5AB3FF] text-sm hover:underline mt-1"
+              className="text-center text-[#8C00FF] text-sm hover:text-[#FF3F7F] hover:underline mt-1 transition"
             >
               Already have an account?
             </Link>
