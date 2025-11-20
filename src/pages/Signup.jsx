@@ -96,14 +96,14 @@ export default function Signup() {
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Top Left */}
         <img
-          src="/bg/shape-top-left.png"
+          src="/bg/upper-left.png"
           className="absolute top-0 left-0 
           w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
         />
 
         {/* Top Right */}
         <img
-          src="/bg/shape-top-right.png"
+          src="/bg/upper-right.png"
           className="absolute top-0 right-0
           w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
         />
@@ -117,7 +117,7 @@ export default function Signup() {
 
         {/* Bottom Right */}
         <img
-          src="/bg/shape-bottom-kanan.png"
+          src="/bg/bottom-right.png"
           className="absolute bottom-0 right-0
           w-28 sm:w-40 md:w-56 lg:w-72 opacity-30"
         />
