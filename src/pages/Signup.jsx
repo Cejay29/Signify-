@@ -92,7 +92,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="bg-[#450693]/20 min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
+    <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Top Left */}
         <img
