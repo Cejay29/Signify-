@@ -228,7 +228,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="relative">
               <Mail
-                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#8C00FF]"
+                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#FF3F7F]"
                 size={18}
               />
               <input
@@ -250,7 +250,7 @@ export default function Login() {
             {/* Password */}
             <div className="relative">
               <Lock
-                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#8C00FF]"
+                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#FF3F7F]"
                 size={18}
               />
               <input
