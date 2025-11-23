@@ -75,7 +75,10 @@ export default function Signup() {
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/login`,
+        emailRedirectTo:
+  process.env.NODE_ENV === "production"
+    ? "https://signify-bxkli1xnr-cejay29s-projects.vercel.app/login"
+    : "http://localhost:5173/login",
         data: {
           firstName: form.firstName,
           lastName: form.lastName,
@@ -93,14 +96,13 @@ export default function Signup() {
     }
 
     showToastMsg(
-  <span className="flex items-center gap-2">
-    Signup successful! <PartyPopper size={16} />
-  </span>,
-  "bg-green-600"
-);
+      <span className="flex items-center gap-2">
+        Signup successful! <PartyPopper size={16} />
+      </span>,
+      "bg-green-600"
+    );
 
-setTimeout(() => navigate("/login"), 1500);
-
+    setTimeout(() => navigate("/login"), 1500);
   }
 
   return (

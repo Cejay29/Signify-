@@ -114,7 +114,10 @@ export default function Login() {
     const email = e.target.resetEmail.value.trim();
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/update-password`,
+      redirectTo:
+        process.env.NODE_ENV === "production"
+          ? "https://signify-bxkli1xnr-cejay29s-projects.vercel.app/update-password"
+          : "http://localhost:5173/update-password",
     });
 
     if (error) return showToastMsg(error.message);
