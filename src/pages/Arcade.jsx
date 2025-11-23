@@ -31,19 +31,6 @@ function HUD({ hearts = 0, gems = 0, streak = 0 }) {
   );
 }
 
-function showAchievementPopup(achievement) {
-  setPopup({
-    visible: true,
-    title: achievement.title,
-    rarity: achievement.rarity,
-  });
-
-  setTimeout(() => {
-    setPopup({ visible: false, title: "", rarity: "common" });
-  }, 2200);
-}
-
-
 /* ---------------- Controls ---------------- */
 
 function Controls({ hard, onHard, sounds, onSounds, onStart, onStop, disabled }) {
@@ -313,6 +300,21 @@ export default function Arcade() {
     }
   }, [category, labels, customPool]);
 
+  const showAchievementPopup = (achievement) => {
+    setPopup({
+      visible: true,
+      title: achievement.title,
+      rarity: achievement.rarity,
+    });
+
+    setTimeout(() => {
+      setPopup({
+        visible: false,
+        title: "",
+        rarity: "common",
+      });
+    }, 2200);
+  };
 
   // ----- leaderboard -----
   const loadLeaderboard = useCallback(
