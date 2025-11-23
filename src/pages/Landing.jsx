@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import PlayfulBackground from "../components/Playfulbackground";
 
 export default function Landing() {
     return (
         <div className="relative min-h-screen w-screen bg-white font-[Inter] overflow-x-hidden">
-
+            <PlayfulBackground />
             {/* HEADER */}
             <header className="w-full flex items-center justify-between px-6 md:px-10 lg:px-12 pt-6">
                 {/* LOGO + TEXT */}
