@@ -228,9 +228,11 @@ export default function Login() {
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="relative">
               <Mail
-                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#FF3F7F]"
+                className="absolute top-1/2 -translate-y-1/2 left-4"
                 size={18}
+                style={{ stroke: "#FF3F7F" }} // overrides all CSS
               />
+
               <input
                 type="email"
                 name="email"
@@ -250,8 +252,9 @@ export default function Login() {
             {/* Password */}
             <div className="relative">
               <Lock
-                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#FF3F7F]"
+                className="absolute top-1/2 -translate-y-1/2 left-4"
                 size={18}
+                style={{ stroke: "#FF3F7F" }} // overrides all CSS
               />
               <input
                 type={showPassword ? "text" : "password"}
