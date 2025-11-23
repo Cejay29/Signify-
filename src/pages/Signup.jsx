@@ -11,6 +11,7 @@ import {
   PartyPopper,
   Hand,
   MessageCircle,
+  Loader2,
 } from "lucide-react";
 
 export default function Signup() {
@@ -29,6 +30,7 @@ export default function Signup() {
   const [toast, setToast] = useState("");
   const [pwVisible, setPwVisible] = useState(false);
   const [pw2Visible, setPw2Visible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const showToastMsg = (msg, color = "bg-red-500") => {
     setToast({ msg, color });
@@ -63,6 +65,9 @@ export default function Signup() {
 
   async function handleSignup(e) {
     e.preventDefault();
+    if (!canSubmit || loading) return;
+
+    setLoading(true);
 
     console.log("Attempting signup with:", form);
 
@@ -81,7 +86,11 @@ export default function Signup() {
     });
 
     console.log("AUTH RESULT:", data, error);
-    if (error) return showToastMsg(error.message);
+
+    if (error) {
+      setLoading(false);
+      return showToastMsg(error.message);
+    }
 
     const user = data.user;
 
@@ -93,7 +102,10 @@ export default function Signup() {
       gender: form.gender,
     });
 
-    if (insertError) return showToastMsg(insertError.message);
+    if (insertError) {
+      setLoading(false);
+      return showToastMsg(insertError.message);
+    }
 
     showToastMsg(
       <span className="flex items-center gap-2">
@@ -354,14 +366,21 @@ export default function Signup() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!canSubmit}
-              className={`mt-3 py-3 rounded-2xl font-semibold text-white shadow-lg transition transform ${
-                canSubmit
-                  ? "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-95 hover:-translate-y-0.5"
-                  : "bg-gray-400 cursor-not-allowed"
+              disabled={!canSubmit || loading}
+              className={`mt-3 py-3 rounded-2xl font-semibold text-white shadow-lg transition flex items-center justify-center gap-2 ${
+                !canSubmit || loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-95 hover:-translate-y-0.5"
               }`}
             >
-              Start signing with Signify
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  Creating account...
+                </>
+              ) : (
+                "Start signing with Signify"
+              )}
             </button>
 
             <Link
