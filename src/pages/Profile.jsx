@@ -201,38 +201,33 @@ export default function Profile() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {achievements.map((a) => {
                 const isUnlocked = unlockedIds.includes(a.id);
+
                 return (
                   <div
                     key={a.id}
-                    className={`border rounded-xl p-5 ${rarityClass(
-                      a.rarity
-                    )} ${
-                      isUnlocked ? "bg-[#2A2A3C]" : "bg-[#1C1B2E] opacity-70"
-                    }`}
+                    className={`border rounded-xl p-5 ${rarityClass(a.rarity)}
+          ${isUnlocked ? "bg-[#2A2A3C]" : "bg-[#1C1B2E] opacity-70"}`}
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <Trophy className="w-7 h-7 text-yellow-400" />
+                      <AchievementIcon icon={a.icon} size={28} />
                       <h4 className="text-xl font-bold">{a.title}</h4>
                     </div>
+
                     <p className="text-gray-300 text-sm mb-3">
                       {a.description || ""}
                     </p>
 
-                    <div
-                      className={`text-sm ${
-                        isUnlocked ? "text-green-400" : "text-gray-500"
-                      }`}
-                    >
+                    <div className={`text-sm ${isUnlocked ? "text-green-400" : "text-gray-500"
+                      }`}>
                       {isUnlocked ? "✅ Unlocked" : "🔒 Locked"}
-                      <span className="italic ml-1">
-                        · {rarityLabel(a.rarity)}
-                      </span>
+                      <span className="italic ml-1">· {rarityLabel(a.rarity)}</span>
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
+
         </section>
       </main>
     </div>

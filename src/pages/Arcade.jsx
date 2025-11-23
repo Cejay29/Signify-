@@ -811,7 +811,6 @@ export default function Arcade() {
           )}
         </section>
 
-
         <Controls
           hard={hardMode}
           onHard={setHardMode}
