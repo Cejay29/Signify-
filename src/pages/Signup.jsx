@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { Eye, EyeOff, Check, X } from "lucide-react";
+import { Eye, EyeOff, Check, X, Mail, Lock } from "lucide-react";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -56,7 +56,6 @@ export default function Signup() {
 
     console.log("Attempting signup with:", form);
 
-    // ✅ Sign up user
     const { data, error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
@@ -76,10 +75,9 @@ export default function Signup() {
 
     const user = data.user;
 
-    // ✅ Insert into public.users
     const { error: insertError } = await supabase.from("users").insert({
       id: user.id,
-      username: form.firstName, // OR remove this field if you want
+      username: form.firstName,
       email: form.email,
       birthday: form.birthday,
       gender: form.gender,
@@ -87,47 +85,33 @@ export default function Signup() {
 
     if (insertError) return showToastMsg(insertError.message);
 
-    showToastMsg("Signup successful!", "bg-green-600");
+    showToastMsg("Signup successful! 🎉", "bg-green-600");
     setTimeout(() => navigate("/login"), 1500);
   }
 
   return (
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
+      {/* Background shapes */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        {/* Top Left */}
         <img
           src="/bg/upper-left.png"
-          className="absolute top--20 left-0 
-          w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
+          className="absolute top--20 left-0 w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
         />
-
-        {/* Top Right */}
         <img
           src="/bg/upper-right.png"
-          className="absolute top-20 right-0
-            w-48 sm:w-60 md:w-80 lg:w-[380px] xl:w-[420px]"
+          className="absolute top-20 right-0 w-48 sm:w-60 md:w-80 lg:w-[380px] xl:w-[420px]"
         />
-
-        {/* Bottom Left */}
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-0 left-0
-          w-40 sm:w-56 md:w-72 lg:w-96 opacity-70"
+          className="absolute bottom-0 left-0 w-40 sm:w-56 md:w-72 lg:w-96 opacity-70"
         />
-
-        {/* Bottom Right */}
         <img
           src="/bg/lower-right.png"
-          className="absolute bottom-0 right-0
-        w-48 sm:w-72 md:w-96 lg:w-[420px] xl:w-[480px] opacity-30"
+          className="absolute bottom-0 right-0 w-48 sm:w-72 md:w-96 lg:w-[420px] xl:w-[480px] opacity-30"
         />
-
-        {/* Center Mascot Shape */}
         <img
           src="/bg/shape-center.png"
-          className="absolute top-[150px] left-[25%]
-          w-60 sm:w-72 md:w-[360px] lg:w-[480px] xl:w-[520px]
-          rotate-[-8deg] opacity-70"
+          className="absolute top-[150px] left-[25%] w-60 sm:w-72 md:w-[360px] lg:w-[480px] xl:w-[520px] rotate-[-8deg] opacity-70"
         />
       </div>
 
@@ -148,17 +132,58 @@ export default function Signup() {
         ✕
       </button>
 
+      {/* Card */}
       <div className="z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl px-4 py-6 sm:py-8 mx-auto">
-        <div className="bg-white text-black p-5 sm:p-6 md:p-8 rounded-2xl shadow-xl border-2 border-[#FFC400]">
-          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-[#8C00FF]">
-            Sign Up
-          </h1>
+        <div className="bg-white/95 backdrop-blur-sm text-black p-5 sm:p-6 md:p-8 rounded-3xl shadow-2xl border-2 border-[#FFC400] relative overflow-hidden">
+          {/* soft glow behind mascot */}
+          <div className="pointer-events-none absolute -top-16 -right-10 h-40 w-40 rounded-full bg-[#FF3F7F]/15 blur-3xl" />
 
-          <form onSubmit={handleSignup} className="flex flex-col gap-4">
+          {/* Header with mascot */}
+          <div className="flex flex-col items-center gap-3 mb-4">
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-full bg-[#FFC400]/50 blur-xl opacity-70" />
+              <div className="relative bg-white rounded-full p-2 shadow-md">
+                <img
+                  src="/img/big-logo.gif"
+                  alt="Signify mascot"
+                  className="w-14 h-14 object-contain"
+                />
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-xs tracking-[0.25em] uppercase text-[#FF3F7F] font-semibold">
+                Welcome to Signify
+              </p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#8C00FF] mt-1">
+                Let&apos;s create your account!
+              </h1>
+              <p className="text-xs sm:text-sm text-[#450693]/80 mt-1">
+                Join a playful world where your hands do the talking. ✋💬
+              </p>
+            </div>
+
+            {/* Tiny progress bar */}
+            <div className="w-full max-w-md mt-2 flex items-center gap-3 text-[11px] text-[#450693]/80">
+              <span className="font-semibold">Step 1 of 1</span>
+              <div className="flex-1 h-1.5 rounded-full bg-[#f4e6ff] overflow-hidden">
+                <div className="h-full w-full bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F]" />
+              </div>
+              <span className="font-semibold text-[#FF3F7F]">
+                Almost ready ✨
+              </span>
+            </div>
+          </div>
+
+          {/* FORM */}
+          <form onSubmit={handleSignup} className="flex flex-col gap-4 mt-3">
             {/* First & Last Name */}
             <div>
-              <label className="text-sm font-medium text-[#450693]">
-                First & Last Name
+              <label className="text-sm font-semibold text-[#450693] flex items-center gap-1">
+                Your name
+                <span className="text-[10px] text-[#FF3F7F]">
+                  (for your profile)
+                </span>
               </label>
               <div className="flex gap-2 mt-1">
                 <input
@@ -166,79 +191,88 @@ export default function Signup() {
                   placeholder="First name"
                   required
                   onChange={update}
-                  className="p-3 border rounded-xl w-1/2 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
+                  className="p-3 border rounded-2xl w-1/2 bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm"
                 />
                 <input
                   name="lastName"
                   placeholder="Last name"
                   required
                   onChange={update}
-                  className="p-3 border rounded-xl w-1/2 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
+                  className="p-3 border rounded-2xl w-1/2 bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm"
                 />
               </div>
             </div>
 
-            {/* Birthday */}
-            <div>
-              <label className="text-sm font-medium text-[#450693]">
-                Birthday
-              </label>
-              <input
-                type="date"
-                name="birthday"
-                required
-                onChange={update}
-                className="p-3 border rounded-xl w-full mt-1 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
-              />
-            </div>
+            {/* Birthday & Gender */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-semibold text-[#450693]">
+                  Birthday
+                </label>
+                <input
+                  type="date"
+                  name="birthday"
+                  required
+                  onChange={update}
+                  className="p-3 border rounded-2xl w-full mt-1 bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm"
+                />
+              </div>
 
-            {/* Gender */}
-            <div>
-              <label className="text-sm font-medium text-[#450693]">
-                Gender
-              </label>
-              <select
-                name="gender"
-                required
-                onChange={update}
-                className="p-3 border rounded-xl w-full mt-1 bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
-              >
-                <option value="">Select gender</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Other">Other</option>
-              </select>
+              <div>
+                <label className="text-sm font-semibold text-[#450693]">
+                  Gender
+                </label>
+                <select
+                  name="gender"
+                  required
+                  onChange={update}
+                  className="p-3 border rounded-2xl w-full mt-1 bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm"
+                >
+                  <option value="">Select gender</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="text-sm font-medium text-[#450693]">
+              <label className="text-sm font-semibold text-[#450693]">
                 Email
               </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                required
-                onChange={update}
-                className="p-3 border rounded-xl w-full mt-1 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
-              />
+              <div className="relative mt-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C00FF]">
+                  <Mail size={18} />
+                </span>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  required
+                  onChange={update}
+                  className="p-3 pl-10 border rounded-2xl w-full bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm"
+                />
+              </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-sm font-medium text-[#450693]">
+              <label className="text-sm font-semibold text-[#450693]">
                 Password
               </label>
 
               <div className="relative mt-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C00FF]">
+                  <Lock size={18} />
+                </span>
                 <input
                   type={pwVisible ? "text" : "password"}
                   name="password"
-                  placeholder="Password"
+                  placeholder="Create a strong password"
                   required
                   onChange={update}
-                  className="p-3 border rounded-xl w-full pr-12 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
+                  className="p-3 pl-10 border rounded-2xl w-full pr-12 bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm"
                 />
 
                 <button
@@ -246,12 +280,12 @@ export default function Signup() {
                   onClick={() => setPwVisible(!pwVisible)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8C00FF]"
                 >
-                  {pwVisible ? <EyeOff /> : <Eye />}
+                  {pwVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
 
               {/* Password Rules */}
-              <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm">
+              <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs sm:text-sm">
                 {[
                   ["length", "At least 8 characters"],
                   ["lower", "1 lowercase letter"],
@@ -265,7 +299,7 @@ export default function Signup() {
                     ) : (
                       <X className="text-gray-400" size={16} />
                     )}
-                    {label}
+                    <span>{label}</span>
                   </div>
                 ))}
               </div>
@@ -273,18 +307,21 @@ export default function Signup() {
 
             {/* Confirm Password */}
             <div>
-              <label className="text-sm font-medium text-[#450693]">
+              <label className="text-sm font-semibold text-[#450693]">
                 Confirm Password
               </label>
 
               <div className="relative mt-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C00FF]">
+                  <Lock size={18} />
+                </span>
                 <input
                   type={pw2Visible ? "text" : "password"}
                   name="confirm"
-                  placeholder="Confirm password"
+                  placeholder="Type it again"
                   required
                   onChange={update}
-                  className={`p-3 border rounded-xl w-full pr-12 focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition ${
+                  className={`p-3 pl-10 border rounded-2xl w-full pr-12 bg-[#F9F5FF] focus:bg-white focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition text-sm ${
                     form.confirm
                       ? form.confirm === form.password
                         ? "border-green-600"
@@ -298,13 +335,13 @@ export default function Signup() {
                   onClick={() => setPw2Visible(!pw2Visible)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8C00FF]"
                 >
-                  {pw2Visible ? <EyeOff /> : <Eye />}
+                  {pw2Visible ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
 
               {form.confirm && form.confirm !== form.password && (
                 <p className="text-xs text-red-600 mt-1">
-                  Passwords do not match.
+                  Oops! Those don&apos;t match yet.
                 </p>
               )}
             </div>
@@ -313,20 +350,20 @@ export default function Signup() {
             <button
               type="submit"
               disabled={!canSubmit}
-              className={`mt-2 py-3 rounded-xl font-semibold text-white shadow-lg transition ${
+              className={`mt-3 py-3 rounded-2xl font-semibold text-white shadow-lg transition transform ${
                 canSubmit
-                  ? "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-90"
+                  ? "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-95 hover:-translate-y-0.5"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
-              Create Account
+              Start signing with Signify ✋
             </button>
 
             <Link
               to="/login"
-              className="text-center text-[#8C00FF] text-sm hover:text-[#FF3F7F] hover:underline mt-1 transition"
+              className="text-center text-[#8C00FF] text-sm hover:text-[#FF3F7F] hover:underline mt-2 transition"
             >
-              Already have an account?
+              Already have an account? Log in
             </Link>
           </form>
         </div>
