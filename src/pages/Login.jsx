@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import {
   Eye,
@@ -24,27 +24,22 @@ export default function Login() {
   };
 
   // ---------------------------------------------------
-  // ✅ AUTO-CREATE USER PROFILE AFTER LOGIN (SAFE FOR RLS)
+  // ✅ AUTO-CREATE USER PROFILE WHEN FIRST LOGGING IN
   // ---------------------------------------------------
   async function ensureUserProfile(user) {
     if (!user) return;
 
     const { id, email, user_metadata } = user;
 
-    // Check if profile exists
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing } = await supabase
       .from("users")
       .select("id")
       .eq("id", id)
       .maybeSingle();
 
-    if (existing) {
-      console.log("User profile already exists");
-      return;
-    }
+    if (existing) return;
 
-    // Insert new profile
-    const { error: insertError } = await supabase.from("users").insert({
+    await supabase.from("users").insert({
       id,
       username: user_metadata?.firstName || "",
       email,
@@ -55,14 +50,45 @@ export default function Login() {
       level: 1,
       hearts: 5,
       streak: 0,
-      last_active: new Date().toISOString(),
+      last_active: null,
     });
+  }
 
-    if (insertError) {
-      console.error("Failed to auto-create profile:", insertError);
+  // ---------------------------------------------------
+  // ⭐ NEW — STREAK SYSTEM
+  // ---------------------------------------------------
+  async function updateStreak(userId) {
+    const today = new Date().toISOString().split("T")[0];
+
+    const { data, error } = await supabase
+      .from("users")
+      .select("streak, last_active")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!data || error) return;
+
+    const last = data.last_active;
+    let newStreak = data.streak ?? 0;
+
+    if (!last) {
+      newStreak = 1; // FIRST LOGIN EVER
     } else {
-      console.log("Profile created!");
+      const lastD = new Date(last);
+      const todayD = new Date(today);
+      const diff = (todayD - lastD) / (1000 * 60 * 60 * 24);
+
+      if (diff === 1) newStreak += 1; // consecutive day
+      else if (diff > 1) newStreak = 1; // reset
     }
+
+    await supabase
+      .from("users")
+      .update({
+        streak: newStreak,
+        last_active: today,
+      })
+      .eq("id", userId);
   }
 
   // ---------------------------------------------------
@@ -85,14 +111,16 @@ export default function Login() {
       return showToastMsg(error.message);
     }
 
-    // Require email verification
     if (!data.user.email_confirmed_at) {
       setLoading(false);
       return showToastMsg("Please verify your email first.");
     }
 
-    // 🔥 Auto-create missing row in "users"
+    // 🔥 Ensure profile row exists
     await ensureUserProfile(data.user);
+
+    // 🔥 Update streak
+    await updateStreak(data.user.id);
 
     // Check if admin
     const { data: adminData } = await supabase
@@ -109,6 +137,9 @@ export default function Login() {
     }, 800);
   }
 
+  // ---------------------------------------------------
+  // PASSWORD RESET
+  // ---------------------------------------------------
   async function handleReset(e) {
     e.preventDefault();
     const email = e.target.resetEmail.value.trim();
@@ -127,7 +158,7 @@ export default function Login() {
   }
 
   // ---------------------------------------------------
-  // UI + DESIGN (unchanged)
+  // UI ONLY (unchanged)
   // ---------------------------------------------------
   return (
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
@@ -135,19 +166,19 @@ export default function Login() {
       <div className="absolute inset-0 pointer-events-none z-0">
         <img
           src="/bg/upper-left.png"
-          className="absolute top-[-100px] left-[-80px] w-72 sm:w-80 md:w-[420px] opacity-80"
+          className="absolute top-[-100px] left-[-80px] w-72 opacity-80"
         />
         <img
           src="/bg/upper-right.png"
-          className="absolute top-[-120px] right-[-80px] w-80 sm:w-[420px] md:w-[480px] opacity-80"
+          className="absolute top-[-120px] right-[-80px] w-80 opacity-80"
         />
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-[-150px] left-[-80px] w-80 sm:w-[450px] md:w-[520px] opacity-60"
+          className="absolute bottom-[-150px] left-[-80px] w-80 opacity-60"
         />
         <img
           src="/bg/lower-right.png"
-          className="absolute bottom-[-160px] right-[-80px] w-80 sm:w-[450px] md:w-[520px] opacity-40"
+          className="absolute bottom-[-160px] right-[-80px] w-80 opacity-40"
         />
       </div>
 
@@ -160,7 +191,7 @@ export default function Login() {
         </div>
       )}
 
-      {/* Close Button */}
+      {/* Close */}
       <button
         onClick={() => navigate("/")}
         className="fixed top-4 left-4 text-[#FFC400] text-3xl z-50 hover:text-[#FF3F7F] transition"
@@ -171,13 +202,13 @@ export default function Login() {
       {/* Login Card */}
       <div className="z-10 w-full max-w-md px-6">
         <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border-2 border-[#FFC400] relative">
-          {/* Mascot Glow */}
+          {/* Glow */}
           <div className="absolute -top-12 -right-10 h-36 w-36 bg-[#FF3F7F]/20 rounded-full blur-3xl" />
 
-          {/* Mascot */}
+          {/* Logo */}
           <div className="flex flex-col items-center mb-5">
             <div className="relative">
-              <div className="absolute -inset-2 bg-[#FFC400]/50 blur-xl rounded-full opacity-70"></div>
+              <div className="absolute -inset-2 bg-[#FFC400]/50 blur-xl rounded-full opacity-70" />
               <div className="relative bg-white rounded-full p-2 shadow-md">
                 <img src="/img/big-logo.gif" className="w-14 h-14" />
               </div>
@@ -186,7 +217,6 @@ export default function Login() {
             <h2 className="text-3xl font-extrabold text-[#8C00FF] mt-3">
               Welcome Back!
             </h2>
-
             <p className="text-sm text-[#450693]/80 flex items-center gap-1 mt-1">
               It's time to start signing again!
               <Hand size={16} className="text-[#8C00FF]" />
@@ -196,7 +226,6 @@ export default function Login() {
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            {/* Email */}
             <div className="relative">
               <Mail
                 className="absolute top-1/2 -translate-y-1/2 left-3 text-[#8C00FF]"
@@ -205,13 +234,12 @@ export default function Login() {
               <input
                 type="email"
                 name="email"
-                placeholder="Email"
                 required
-                className="w-full p-3 pl-10 rounded-xl border bg-[#F9F5FF] focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
+                placeholder="Email"
+                className="p-3 pl-10 rounded-xl border bg-[#F9F5FF]"
               />
             </div>
 
-            {/* Password */}
             <div className="relative">
               <Lock
                 className="absolute top-1/2 -translate-y-1/2 left-3 text-[#8C00FF]"
@@ -220,9 +248,9 @@ export default function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Password"
                 required
-                className="w-full p-3 pl-10 pr-12 rounded-xl border bg-[#F9F5FF] focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
+                placeholder="Password"
+                className="p-3 pl-10 pr-12 rounded-xl border bg-[#F9F5FF]"
               />
               <button
                 type="button"
@@ -233,23 +261,21 @@ export default function Login() {
               </button>
             </div>
 
-            {/* Forgot password */}
             <button
               type="button"
               onClick={() => setForgotOpen(true)}
-              className="text-xs text-[#8C00FF] hover:text-[#FF3F7F] text-right underline"
+              className="text-xs text-[#8C00FF] underline text-right"
             >
               Forgot Password?
             </button>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className={`py-3 rounded-xl text-white font-semibold shadow-lg flex items-center justify-center gap-2 transition ${
+              className={`py-3 rounded-xl text-white font-semibold shadow-lg flex items-center justify-center gap-2 ${
                 loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-90"
+                  ? "bg-gray-400"
+                  : "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F]"
               }`}
             >
               {loading ? (
@@ -261,12 +287,11 @@ export default function Login() {
               )}
             </button>
 
-            <div className="text-center mt-2 text-sm">
+            <div className="text-center text-sm mt-2">
               <span className="text-[#450693]">New here?</span>{" "}
               <button
-                type="button"
                 onClick={() => navigate("/signup")}
-                className="text-[#8C00FF] hover:text-[#FF3F7F] underline"
+                className="text-[#8C00FF] underline"
               >
                 Create an account
               </button>
@@ -275,14 +300,14 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Forgot Password Modal */}
+      {/* Reset Modal */}
       {forgotOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl w-full max-w-sm border-2 border-[#FFC400] shadow-xl">
+          <div className="bg-white/95 p-6 rounded-xl border-2 border-[#FFC400] shadow-xl">
             <h3 className="text-xl font-bold text-[#8C00FF] mb-2">
               Reset Password
             </h3>
-            <p className="text-sm text-[#450693]/80 mb-4">
+            <p className="text-[#450693]/80 mb-4 text-sm">
               Enter your email to receive a reset link.
             </p>
 
@@ -290,23 +315,21 @@ export default function Login() {
               <input
                 type="email"
                 name="resetEmail"
-                placeholder="Your email"
+                className="p-3 rounded-xl border bg-[#F9F5FF]"
                 required
-                className="p-3 rounded-xl border bg-[#F9F5FF] focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
               />
 
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setForgotOpen(false)}
-                  className="px-4 py-2 bg-gray-200 text-[#450693] rounded-lg"
+                  className="px-4 py-2 bg-gray-200 rounded-lg"
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] text-white rounded-lg shadow-md"
+                  className="px-4 py-2 bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] text-white rounded-lg"
                 >
                   Send Link
                 </button>
