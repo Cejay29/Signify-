@@ -13,6 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import Sidebar from "../components/Sidebar";
+import AchievementIcon from "../components/AchievementIcon";
 
 /* --------------------- HELPER FUNCTIONS --------------------- */
 function xpNeededFor(level) {
@@ -192,6 +193,7 @@ export default function Profile() {
             </div>
           </div>
 
+          {/* Achievements */}
           {/* Achievements */}
           <div>
             <h3 className="text-2xl font-semibold mb-3 flex items-center gap-2">
