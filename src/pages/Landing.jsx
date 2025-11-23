@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import PlayfulBackground from "../components/PlayfulBackground";
+import PlayfulBackground from "../components/temp";
 
 export default function Landing() {
     return (
