@@ -182,18 +182,6 @@ export default function Signup() {
                 </span>
               </p>
             </div>
-
-            {/* Tiny progress bar */}
-            <div className="w-full max-w-md mt-2 flex items-center gap-3 text-[11px] text-[#450693]/80">
-              <span className="font-semibold">Step 1 of 1</span>
-              <div className="flex-1 h-1.5 rounded-full bg-[#f4e6ff] overflow-hidden">
-                <div className="h-full w-full bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F]" />
-              </div>
-              <span className="font-semibold text-[#FF3F7F]">
-                Almost ready{" "}
-                <Sparkles size={14} className="inline ml-1 text-[#FF3F7F]" />
-              </span>
-            </div>
           </div>
 
           {/* FORM */}
