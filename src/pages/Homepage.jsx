@@ -1,4 +1,3 @@
-// Homepage.jsx
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { supabase } from "../lib/supabaseClient";
@@ -96,42 +95,50 @@ export default function Homepage() {
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-[#1C1B2E] via-[#1C1B2E] to-[#14142B] font-['Inter']">
-      {/* ✅ SIDEBAR FIXED */}
+    <div className="relative flex min-h-screen bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] text-white overflow-hidden font-[Inter]">
+
+      {/* 🌟 Background Floating Shapes */}
+      <img src="/bg/upper-left.png" className="absolute top-[-100px] left-[-80px] w-72 opacity-60 pointer-events-none" />
+      <img src="/bg/upper-right.png" className="absolute top-[-140px] right-[-60px] w-96 opacity-60 pointer-events-none" />
+      <img src="/bg/shape-bottom-left.png" className="absolute bottom-[-180px] left-[-90px] w-96 opacity-70 pointer-events-none" />
+      <img src="/bg/lower-right.png" className="absolute bottom-[-150px] right-[-60px] w-96 opacity-40 pointer-events-none" />
+
+      {/* Sidebar */}
       <Sidebar onLogout={logout} />
 
-      {/* ✅ MAIN CONTENT AREA */}
+      {/* MAIN CONTENT */}
       <main
         className="
-    flex-1 overflow-y-auto p-8
-    md:ml-16        /* Tablet offset (icon-only sidebar width) */
-    xl:ml-[250px]   /* Desktop offset (full sidebar width) */
-  "
+          flex-1 overflow-y-auto p-10
+          md:ml-16 xl:ml-[250px]
+        "
       >
-        {/* ✅ HUD */}
-        <header className="fixed top-6 right-8 flex items-center gap-4 bg-[#2A2A3C] px-5 py-3 rounded-2xl shadow-lg border border-[#C5CAFF] z-10">
-          <div className="hud-pill">
+
+        {/* HUD */}
+        <header className="fixed top-6 right-8 flex items-center gap-4 bg-white/20 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-xl border border-white/40 z-20">
+          <div className="flex items-center gap-2">
             <img src="/img/fire.png" className="w-6 h-6" />
-            <span>{stats.streak}</span>
+            <span className="font-bold">{stats.streak}</span>
           </div>
-          <div className="hud-pill">
+          <div className="flex items-center gap-2">
             <img src="/img/gem.png" className="w-6 h-6" />
-            <span>{stats.gems}</span>
+            <span className="font-bold">{stats.gems}</span>
           </div>
-          <div className="hud-pill">
+          <div className="flex items-center gap-2">
             <img src="/img/heart.png" className="w-6 h-6" />
-            <span>{stats.hearts}</span>
+            <span className="font-bold">{stats.hearts}</span>
           </div>
         </header>
 
-        {/* ✅ LEVEL + LESSONS */}
-        <section className="pt-40 flex flex-col items-center gap-10">
+        {/* TITLE */}
+        <h1 className="text-4xl font-extrabold text-center mt-32 mb-10 drop-shadow-lg text-yellow-300">
+          Your Learning Path
+        </h1>
+
+        {/* LEVEL + LESSON BUBBLE PATH */}
+        <section className="flex flex-col items-center gap-24 pb-20">
           {levels.map((level, i) => {
             const levelLessons = lessons.filter((l) => l.level_id === level.id);
-            const completedCount = levelLessons.filter((l) =>
-              completed.has(l.id)
-            ).length;
-
             const unlocked =
               i === 0 ||
               levels.slice(0, i).every((prev) => {
@@ -145,34 +152,23 @@ export default function Homepage() {
               });
 
             return (
-              <div
-                key={level.id}
-                className="w-full max-w-3xl bg-[#2A2A3C] p-6 rounded-2xl border border-[#C5CAFF] text-white animate-fade-in-up"
-              >
-                <div className="mb-4">
-                  <div className="text-[#C5CAFF] text-sm font-semibold uppercase">
-                    Unit {level.order}
-                  </div>
-                  <div className="text-xl font-bold">{level.title}</div>
-
-                  <div className="w-full h-2 bg-[#3a3a55] rounded-full overflow-hidden mt-2">
-                    <div
-                      className="h-full bg-[#C5CAFF]"
-                      style={{
-                        width: `${
-                          (completedCount / levelLessons.length) * 100 || 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-
-                  <div className="text-sm text-gray-300">
-                    Progress: {completedCount}/{levelLessons.length}
-                  </div>
+              <div key={level.id} className="flex flex-col items-center w-full">
+                {/* UNIT BUBBLE */}
+                <div
+                  className="
+                    bg-white/90 text-[#450693] px-6 py-4
+                    rounded-full shadow-2xl text-xl font-bold
+                    border-2 border-[#FFC400]
+                    backdrop-blur-xl
+                    animate-fade-in-up
+                    mb-6
+                  "
+                >
+                  Unit {level.order}: {level.title}
                 </div>
 
-                {/* ✅ Lessons */}
-                <div className="flex flex-col gap-3 mt-4">
+                {/* CURVED PATH OF BUBBLES */}
+                <div className="flex flex-col gap-10 w-full items-center relative">
                   {levelLessons.map((lesson, idx) => {
                     const done = completed.has(lesson.id);
                     const prev = levelLessons[idx - 1];
@@ -188,40 +184,38 @@ export default function Homepage() {
                             `/lesson?level_id=${lesson.level_id}&lesson_id=${lesson.id}`
                           )
                         }
-                        className={`flex justify-between items-center px-4 py-3 rounded-lg border transition
-                                                    ${
-                                                      !lessonUnlocked
-                                                        ? "bg-gray-700 border-gray-600 text-gray-400 opacity-50"
-                                                        : "bg-[#1C1B2E] hover:bg-[#383857] border-[#C5CAFF]"
-                                                    }`}
+                        className={`
+                          relative flex flex-col items-center justify-center
+                          w-44 h-44 rounded-full
+                          text-center p-4 transition-all
+                          shadow-xl border-4
+                          ${!lessonUnlocked
+                            ? "bg-gray-400 border-gray-300 opacity-40"
+                            : done
+                              ? "bg-gradient-to-br from-[#27E1C1] to-[#00a896] border-[#C5FFE1]"
+                              : "bg-gradient-to-br from-[#FFC400] to-[#FF3F7F] border-white cursor-pointer hover:scale-105"
+                          }
+                        `}
                       >
-                        <div>
-                          <span className="font-semibold flex items-center gap-1">
-                            {lesson.title}
-                            {!lessonUnlocked ? (
-                              <Lock className="w-4 h-4 text-gray-400" />
-                            ) : (
-                              done && (
-                                <Check className="w-4 h-4 text-green-400" />
-                              )
-                            )}
-                          </span>
+                        <span className="text-lg font-bold drop-shadow-md text-white">
+                          {lesson.title}
+                        </span>
 
-                          <span className="text-sm text-gray-400">
-                            {done
-                              ? "Completed"
-                              : !lessonUnlocked
-                              ? "Locked"
-                              : "Start"}
+                        {done ? (
+                          <Check className="w-10 h-10 mt-2 text-white drop-shadow-lg" />
+                        ) : !lessonUnlocked ? (
+                          <Lock className="w-10 h-10 mt-2 text-gray-700" />
+                        ) : (
+                          <span className="text-xs font-semibold mt-3 text-white drop-shadow-lg">
+                            +{lesson.xp_reward} XP · +{lesson.gem_reward} Gems
                           </span>
-                        </div>
-
-                        <div className="text-sm text-[#FFC400] font-medium text-right">
-                          +{lesson.xp_reward} XP <br />+{lesson.gem_reward} Gems
-                        </div>
+                        )}
                       </button>
                     );
                   })}
+
+                  {/* Connector Line */}
+                  <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-white/30"></div>
                 </div>
               </div>
             );
