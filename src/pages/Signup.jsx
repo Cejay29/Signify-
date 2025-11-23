@@ -11,7 +11,6 @@ import {
   PartyPopper,
   Hand,
   MessageCircle,
-  Sparkles,
 } from "lucide-react";
 
 export default function Signup() {
@@ -363,7 +362,6 @@ export default function Signup() {
               }`}
             >
               Start signing with Signify
-              <Hand size={18} className="inline ml-2" />
             </button>
 
             <Link
