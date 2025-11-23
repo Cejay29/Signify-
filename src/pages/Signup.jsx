@@ -190,9 +190,6 @@ export default function Signup() {
             <div>
               <label className="text-sm font-semibold text-[#450693] flex items-center gap-1">
                 Your name
-                <span className="text-[10px] text-[#FF3F7F]">
-                  (for your profile)
-                </span>
               </label>
               <div className="flex gap-2 mt-1">
                 <input
