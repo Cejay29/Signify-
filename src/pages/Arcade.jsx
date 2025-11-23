@@ -4,8 +4,11 @@ import Sidebar from "../components/Sidebar";
 import { supabase } from "../lib/supabaseClient";
 import { loadGestureLibraries } from "../utils/libLoader";
 import { normalize } from "../utils/normalize";
+import { checkArcadeAchievements } from "../lib/arcadeAchievementChecker";
 import useGestureModel from "../hooks/useGestureModel";
 import useHands from "../hooks/useHands";
+import AchievementPopup from "../components/AchievementPopup";
+
 
 /* ---------------- HUD ---------------- */
 
@@ -27,6 +30,19 @@ function HUD({ hearts = 0, gems = 0, streak = 0 }) {
     </header>
   );
 }
+
+function showAchievementPopup(achievement) {
+  setPopup({
+    visible: true,
+    title: achievement.title,
+    rarity: achievement.rarity,
+  });
+
+  setTimeout(() => {
+    setPopup({ visible: false, title: "", rarity: "common" });
+  }, 2200);
+}
+
 
 /* ---------------- Controls ---------------- */
 
@@ -619,7 +635,22 @@ export default function Arcade() {
       const finalStreak = streakRef.current;
 
       try {
+        // ⭐ Save XP/Gems/Run History
         const rewards = await persistRewards(finalScore, finalStreak);
+
+        // ⭐ Auto-check achievements here (NEW)
+        const newlyUnlocked = await checkArcadeAchievements(finalScore, finalStreak);
+
+        // Show each newly unlocked achievement one by one
+        if (newlyUnlocked.length > 0) {
+          let delay = 0;
+          newlyUnlocked.forEach((ach) => {
+            setTimeout(() => showAchievementPopup(ach), delay);
+            delay += 2500; // queue
+          });
+        }
+
+
         setFinishData({
           reason,
           score: finalScore,
@@ -640,6 +671,7 @@ export default function Arcade() {
     },
     [fetchUserStats, loadLeaderboard, leaderFilter, persistRewards, stopCamera]
   );
+
 
   const startTimer = useCallback(() => {
     setTimeLeft(30);
@@ -747,6 +779,13 @@ export default function Arcade() {
       {/* Sidebar */}
       <Sidebar onLogout={handleLogout} />
 
+      {/* 🔥 Achievement Popup appears ABOVE HUD */}
+      <AchievementPopup
+        visible={popup.visible}
+        title={popup.title}
+        rarity={popup.rarity}
+      />
+
       <main
         className="
           flex-1 overflow-y-auto p-6 sm:p-10 relative
@@ -775,8 +814,8 @@ export default function Arcade() {
                 key={cat.id}
                 onClick={() => setCategory(cat.id)}
                 className={`px-3 py-2 rounded-lg text-sm transition font-semibold ${category === cat.id
-                    ? "bg-[#27E1C1] text-black"
-                    : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
+                  ? "bg-[#27E1C1] text-black"
+                  : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
                   }`}
               >
                 {cat.label}

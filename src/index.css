@@ -48,6 +48,7 @@ body {
 
 /* Mascot gentle bounce */
 @keyframes bounce-slow {
+
   0%,
   100% {
     transform: translateY(0);
@@ -96,9 +97,11 @@ body {
   0% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-20px) scale(1.05);
   }
+
   100% {
     transform: translateY(0) scale(1);
   }
@@ -108,9 +111,11 @@ body {
   0% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-30px) scale(1.08);
   }
+
   100% {
     transform: translateY(0) scale(1);
   }
@@ -120,9 +125,11 @@ body {
   0% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-15px) scale(1.03);
   }
+
   100% {
     transform: translateY(0) scale(1);
   }
@@ -141,11 +148,13 @@ body {
 }
 
 @keyframes twinkle {
+
   0%,
   100% {
     opacity: 0.25;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.75;
     transform: scale(1.25);
@@ -154,4 +163,30 @@ body {
 
 .animate-twinkle {
   animation: twinkle 3.8s ease-in-out infinite;
+}
+
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  90% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}
+
+.animate-fadeSlide {
+  animation: fadeSlide 2.2s ease-in-out forwards;
 }
