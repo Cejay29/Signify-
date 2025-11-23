@@ -228,16 +228,9 @@ export default function Login() {
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             {/* Email */}
             <div className="relative">
-              <Mail
-                size={20}
-                className="absolute top-1/2 -translate-y-1/2 left-4"
-                style={{
-                  color: "#FF3F7F",
-                  fill: "none", // <-- force no fill
-                  stroke: "#FF3F7F", // <-- force stroke color
-                }}
-              />
-
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C00FF]">
+                <Mail size={18} />
+              </span>
               <input
                 type="email"
                 name="email"
@@ -256,16 +249,9 @@ export default function Login() {
 
             {/* Password */}
             <div className="relative">
-              <Lock
-                size={20}
-                className="absolute top-1/2 -translate-y-1/2 left-4"
-                style={{
-                  color: "#FF3F7F",
-                  fill: "none",
-                  stroke: "#FF3F7F",
-                }}
-              />
-
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8C00FF]">
+                <Lock size={18} />
+              </span>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
