@@ -218,6 +218,10 @@ export default function Arcade() {
   const [leaderLoading, setLeaderLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
 
+  const [category, setCategory] = useState("all");
+  const [customPool, setCustomPool] = useState([]);
+
+
   // ----- auth + logout -----
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -273,6 +277,26 @@ export default function Arcade() {
       console.error("❌ Failed to fetch user stats:", err);
     }
   }, []);
+
+  const getPoolByCategory = useCallback(() => {
+    if (!labels || !labels.length) return [];
+
+    switch (category) {
+      case "alphabet":
+        return labels.filter(l => /^[A-Z]$/.test(l)); // A–Z
+      case "numbers":
+        return labels.filter(l => /^[0-9]$/.test(l)); // 0–9
+      case "lessons":
+        return labels.filter(l => l.startsWith("L-"));
+      // Example: L-hello, L-thankyou (depends on your label naming)
+      case "custom":
+        return customPool.length ? customPool : labels;
+      case "all":
+      default:
+        return labels;
+    }
+  }, [category, labels, customPool]);
+
 
   // ----- leaderboard -----
   const loadLeaderboard = useCallback(
@@ -421,10 +445,11 @@ export default function Arcade() {
   // ----- gesture handling / camera via useHands -----
 
   const randomTarget = useCallback(() => {
-    if (!labels || !labels.length) return null;
-    const idx = Math.floor(Math.random() * labels.length);
-    return labels[idx];
-  }, [labels]);
+    const pool = getPoolByCategory();
+    if (!pool.length) return null;
+    const idx = Math.floor(Math.random() * pool.length);
+    return pool[idx];
+  }, [getPoolByCategory]);
 
   const handleHitTarget = useCallback(() => {
     hitCooldownRef.current = true;
@@ -647,7 +672,13 @@ export default function Arcade() {
     gameStartedRef.current = true;
 
     // pick initial target
+    const pool = getPoolByCategory();
+    if (!pool.length) {
+      alert("No gestures available in this category.");
+      return;
+    }
     const t = randomTarget();
+
     setTarget(t);
     targetRef.current = t;
 
@@ -729,6 +760,58 @@ export default function Arcade() {
           Arcade Mode
         </h1>
 
+        <section className="bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-6 mb-8">
+          <h2 className="text-2xl font-bold mb-4 text-[#C5CAFF]">Category</h2>
+
+          <div className="flex flex-wrap gap-3">
+            {[
+              { id: "all", label: "All Signs" },
+              { id: "alphabet", label: "Alphabet (A–Z)" },
+              { id: "numbers", label: "Numbers (0–9)" },
+              { id: "lessons", label: "Lesson Signs" },
+              { id: "custom", label: "Custom Mix" },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id)}
+                className={`px-3 py-2 rounded-lg text-sm transition font-semibold ${category === cat.id
+                    ? "bg-[#27E1C1] text-black"
+                    : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
+                  }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Optional Custom Category UI */}
+          {category === "custom" && (
+            <div className="mt-4 p-3 bg-[#14142B] rounded-lg border border-[#2a2a3c]">
+              <p className="text-gray-300 mb-2">Pick custom gestures:</p>
+              <div className="grid grid-cols-3 gap-2 max-h-[150px] overflow-y-auto">
+                {labels?.map((lbl) => (
+                  <label key={lbl} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={customPool.includes(lbl)}
+                      onChange={(e) => {
+                        if (e.target.checked)
+                          setCustomPool((prev) => [...prev, lbl]);
+                        else
+                          setCustomPool((prev) =>
+                            prev.filter((x) => x !== lbl)
+                          );
+                      }}
+                    />
+                    {lbl}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+
         <Controls
           hard={hardMode}
           onHard={setHardMode}
@@ -778,8 +861,8 @@ export default function Arcade() {
                     loadLeaderboard(f);
                   }}
                   className={`px-3 py-1 rounded-lg text-sm font-semibold transition ${leaderFilter === f
-                      ? "bg-[#27E1C1] text:black text-black"
-                      : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
+                    ? "bg-[#27E1C1] text:black text-black"
+                    : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
                     }`}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
