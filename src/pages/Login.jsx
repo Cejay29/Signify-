@@ -79,32 +79,32 @@ export default function Login() {
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
       {/* Background shapes */}
       <div className="absolute inset-0 pointer-events-none z-0">
+        {/* UPPER LEFT */}
         <img
           src="/bg/upper-left.png"
-          className="absolute top-0 left-0 
-    w-64 sm:w-72 md:w-80 lg:w-[380px] xl:w-[420px] 
-    opacity-80"
+          className="absolute top-[-100px] left-[-80px]
+    w-64 sm:w-72 md:w-80 lg:w-[380px] xl:w-[420px] opacity-75"
         />
 
+        {/* UPPER RIGHT */}
         <img
           src="/bg/upper-right.png"
-          className="absolute top-0 right-0 
-    w-72 sm:w-80 md:w-[420px] lg:w-[480px] 
-    opacity-80"
+          className="absolute top-[-120px] right-[-80px]
+    w-72 sm:w-80 md:w-[420px] lg:w-[480px] opacity-75"
         />
 
+        {/* BOTTOM LEFT */}
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-0 left-0 
-    w-72 sm:w-96 md:w-[500px] lg:w-[580px] 
-    opacity-60"
+          className="absolute bottom-[-150px] left-[-80px]
+    w-72 sm:w-96 md:w-[500px] lg:w-[580px] opacity-55"
         />
 
+        {/* BOTTOM RIGHT */}
         <img
           src="/bg/lower-right.png"
-          className="absolute bottom-0 right-0 
-    w-72 sm:w-96 md:w-[500px] lg:w-[580px] 
-    opacity-40"
+          className="absolute bottom-[-160px] right-[-80px]
+    w-72 sm:w-96 md:w-[500px] lg:w-[580px] opacity-35"
         />
       </div>
 
