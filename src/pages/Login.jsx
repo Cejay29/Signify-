@@ -229,9 +229,13 @@ export default function Login() {
             {/* Email */}
             <div className="relative">
               <Mail
-                size={18}
+                size={20}
                 className="absolute top-1/2 -translate-y-1/2 left-4"
-                style={{ color: "#FF3F7F" }} // ✅ FIXED COLOR
+                style={{
+                  color: "#FF3F7F",
+                  fill: "none", // <-- force no fill
+                  stroke: "#FF3F7F", // <-- force stroke color
+                }}
               />
 
               <input
@@ -253,9 +257,13 @@ export default function Login() {
             {/* Password */}
             <div className="relative">
               <Lock
-                size={18}
+                size={20}
                 className="absolute top-1/2 -translate-y-1/2 left-4"
-                style={{ color: "#FF3F7F" }} // ✅ FIXED COLOR
+                style={{
+                  color: "#FF3F7F",
+                  fill: "none",
+                  stroke: "#FF3F7F",
+                }}
               />
 
               <input
