@@ -228,7 +228,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="relative">
               <Mail
-                className="absolute top-1/2 -translate-y-1/2 left-3 text-[#8C00FF]"
+                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#8C00FF]"
                 size={18}
               />
               <input
@@ -236,13 +236,21 @@ export default function Login() {
                 name="email"
                 required
                 placeholder="Email"
-                className="p-3 pl-10 rounded-xl border bg-[#F9F5FF]"
+                className="
+      w-full px-4 py-3 pl-12 
+      rounded-2xl border border-[#d7c9ff]
+      bg-white/70 backdrop-blur-sm
+      shadow-inner 
+      focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
+      outline-none transition
+    "
               />
             </div>
 
+            {/* Password */}
             <div className="relative">
               <Lock
-                className="absolute top-1/2 -translate-y-1/2 left-3 text-[#8C00FF]"
+                className="absolute top-1/2 -translate-y-1/2 left-4 text-[#8C00FF]"
                 size={18}
               />
               <input
@@ -250,8 +258,16 @@ export default function Login() {
                 name="password"
                 required
                 placeholder="Password"
-                className="p-3 pl-10 pr-12 rounded-xl border bg-[#F9F5FF]"
+                className="
+      w-full px-4 py-3 pl-12 pr-12
+      rounded-2xl border border-[#d7c9ff]
+      bg-white/70 backdrop-blur-sm
+      shadow-inner
+      focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
+      outline-none transition
+    "
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
