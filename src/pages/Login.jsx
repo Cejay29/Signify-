@@ -78,22 +78,74 @@ export default function Login() {
   return (
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
       {/* Background shapes */}
-      <div className="absolute inset-0 pointer-events-none z-0">
+      {/* Background shapes */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* TOP LEFT — BIGGER */}
         <img
-          src="/bg/upper-left.png"
-          className="absolute top-0 left-0 w-40 opacity-80"
+          src="/bg/shape-top-left.png"
+          className="absolute top-[-40px] left-[-30px] 
+    w-56 sm:w-72 md:w-96 opacity-90 rotate-[18deg]"
         />
+
+        {/* TOP RIGHT — BIGGER */}
         <img
-          src="/bg/upper-right.png"
-          className="absolute top-0 right-0 w-48 opacity-80"
+          src="/bg/shape-top-right.png"
+          className="absolute top-[-30px] right-[-20px] 
+    w-56 sm:w-72 md:w-96 opacity-90 rotate-[-12deg]"
         />
+
+        {/* BOTTOM LEFT — BIGGER */}
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-0 left-0 w-56 opacity-60"
+          className="absolute bottom-[-40px] left-[-20px] 
+    w-60 sm:w-80 md:w-[420px] opacity-70 rotate-[15deg]"
         />
+
+        {/* BOTTOM RIGHT — BIGGER */}
         <img
-          src="/bg/lower-right.png"
-          className="absolute bottom-0 right-0 w-56 opacity-40"
+          src="/bg/shape-bottom-kanan.png"
+          className="absolute bottom-[-20px] right-[-20px] 
+    w-52 sm:w-72 md:w-96 opacity-50 rotate-[-10deg]"
+        />
+
+        {/* CENTER-LEFT BIG SHAPE */}
+        <img
+          src="/bg/shape-center.png"
+          className="absolute top-[22%] left-[10%] 
+    w-56 sm:w-72 md:w-96 opacity-45 rotate-[25deg]"
+        />
+
+        {/* CENTER-RIGHT BIG SHAPE */}
+        <img
+          src="/bg/shape-center.png"
+          className="absolute top-[50%] right-[8%] 
+    w-64 sm:w-80 md:w-[420px] opacity-40 rotate-[-15deg]"
+        />
+
+        {/* DIRECT CENTER FILL — LARGE SOFT SHAPE */}
+        <img
+          src="/bg/shape-center.png"
+          className="absolute top-[40%] left-[42%] 
+    w-48 sm:w-64 md:w-80 opacity-30 rotate-[30deg]"
+        />
+
+        {/* EXTRA SMALL FLOATING SHAPES — BIGGER & SCATTERED */}
+        <img
+          src="/bg/shape-small.png"
+          className="absolute top-[30%] left-[45%] 
+    w-24 sm:w-32 opacity-35 rotate-[22deg]"
+        />
+
+        <img
+          src="/bg/shape-small.png"
+          className="absolute top-[60%] left-[52%] 
+    w-20 sm:w-28 opacity-30 rotate-[-20deg]"
+        />
+
+        <img
+          src="/bg/shape-small.png"
+          className="absolute top-[38%] right-[32%] 
+    w-20 sm:w-28 opacity-35 rotate-[12deg]"
         />
       </div>
 
