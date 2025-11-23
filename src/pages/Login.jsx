@@ -119,6 +119,10 @@ export default function Login() {
     // 🔥 Ensure profile row exists
     await ensureUserProfile(data.user);
 
+    await supabase.rpc("init_user_progress", {
+      new_user_id: user.id,
+    });
+
     // 🔥 Update streak
     await updateStreak(data.user.id);
 
