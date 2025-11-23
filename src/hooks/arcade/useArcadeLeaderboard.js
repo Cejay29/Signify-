@@ -21,8 +21,8 @@ export default function useArcadeLeaderboard(initialFilter = "daily") {
     async (f = filter) => {
       setLoading(true);
       try {
-        const { data: session } = await supabase.auth.getSession();
-        setCurrentUserId(session?.session?.user?.id || null);
+        const { data: sessionData } = await supabase.auth.getSession();
+        setCurrentUserId(sessionData?.session?.user?.id || null);
 
         let query = supabase
           .from("arcade_best")
@@ -44,15 +44,11 @@ export default function useArcadeLeaderboard(initialFilter = "daily") {
           return;
         }
 
-        // Get usernames in one request
         const ids = [...new Set(best.map((r) => r.user_id))];
-        const { data: users, error: userErr } = await supabase
+        const { data: users } = await supabase
           .from("users")
           .select("id, username")
           .in("id", ids);
-
-        if (userErr)
-          console.warn("⚠️ Username fetch failed, using 'Player'", userErr);
 
         const nameMap = {};
         users?.forEach((u) => (nameMap[u.id] = u.username || "Player"));

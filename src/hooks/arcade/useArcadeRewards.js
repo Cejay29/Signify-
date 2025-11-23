@@ -40,7 +40,7 @@ export default function useArcadeRewards() {
         .eq("user_id", user_id)
         .single();
 
-      if (bestFetchErr && bestFetchErr.code === "PGRST116") {
+      if (bestFetchErr && bestFetchErr.code === "PGRST114") {
         await supabase.from("arcade_best").insert({
           user_id,
           score,
