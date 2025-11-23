@@ -15,7 +15,9 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in env");
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } });
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: false },
+});
 
 function log(...args) {
   console.log("[ML]", ...args);
@@ -69,16 +71,22 @@ function splitArray(xs, ys) {
     xVal: pick(xs, idx.slice(a, b)),
     yVal: pick(ys, idx.slice(a, b)),
     xTest: pick(xs, idx.slice(b)),
-    yTest: pick(ys, idx.slice(b))
+    yTest: pick(ys, idx.slice(b)),
   };
 }
 
-async function uploadFileToBucket(localPath, remotePath, contentType = "application/octet-stream") {
+async function uploadFileToBucket(
+  localPath,
+  remotePath,
+  contentType = "application/octet-stream"
+) {
   const buff = fs.readFileSync(localPath);
-  const { error } = await supabase.storage.from(BUCKET).upload(remotePath, buff, {
-    upsert: true,
-    contentType,
-  });
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(remotePath, buff, {
+      upsert: true,
+      contentType,
+    });
   if (error) {
     throw error;
   }
@@ -90,7 +98,9 @@ export async function runTraining(job = {}) {
 
   // 1) Fetch samples
   const raw = await fetchAllSamples();
-  const valid = raw.filter((s) => Array.isArray(s.landmarks) && s.landmarks.length === 21);
+  const valid = raw.filter(
+    (s) => Array.isArray(s.landmarks) && s.landmarks.length === 21
+  );
 
   // canonicalize labels and build counts
   const counts = {};
@@ -133,12 +143,15 @@ export async function runTraining(job = {}) {
   const totalTrain = yTrain.length;
   const classWeight = {};
   for (let i = 0; i < labels.length; i++) {
-    classWeight[i] = totalTrain / (labels.length * Math.max(1, countsTrain[i] || 0));
+    classWeight[i] =
+      totalTrain / (labels.length * Math.max(1, countsTrain[i] || 0));
   }
 
   // model
   const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 128, inputShape: [63], activation: "relu" }));
+  model.add(
+    tf.layers.dense({ units: 128, inputShape: [63], activation: "relu" })
+  );
   model.add(tf.layers.dropout({ rate: 0.3 }));
   model.add(tf.layers.dense({ units: 64, activation: "relu" }));
   model.add(tf.layers.dense({ units: labels.length, activation: "softmax" }));
@@ -171,13 +184,17 @@ export async function runTraining(job = {}) {
   const predArr = Array.from(await pred.data());
   const trueArr = Array.from(await trueIdx.data());
   const numClasses = labels.length;
-  const confusion = Array(numClasses).fill(0).map(() => Array(numClasses).fill(0));
+  const confusion = Array(numClasses)
+    .fill(0)
+    .map(() => Array(numClasses).fill(0));
   trueArr.forEach((t, i) => {
     confusion[t][predArr[i]]++;
   });
 
   // metrics per class
-  const precision = [], recall = [], f1 = [];
+  const precision = [],
+    recall = [],
+    f1 = [];
   for (let i = 0; i < numClasses; i++) {
     const tp = confusion[i][i];
     const fp = confusion.reduce((acc, r) => acc + r[i], 0) - tp;
@@ -205,8 +222,14 @@ export async function runTraining(job = {}) {
   // write history and labels
   const historyObj = {
     epochs: history.epoch.map((e) => e + 1),
-    train_acc: (history.history?.acc || history.history?.accuracy || []).map((n) => Number(n)),
-    val_acc: (history.history?.val_acc || history.history?.val_accuracy || []).map((n) => Number(n)),
+    train_acc: (history.history?.acc || history.history?.accuracy || []).map(
+      (n) => Number(n)
+    ),
+    val_acc: (
+      history.history?.val_acc ||
+      history.history?.val_accuracy ||
+      []
+    ).map((n) => Number(n)),
     train_loss: history.history?.loss || [],
     val_loss: history.history?.val_loss || [],
     test_acc: testAcc,
@@ -216,7 +239,7 @@ export async function runTraining(job = {}) {
     f1_score: macroF1,
     confusion_matrix: confusion,
     labels,
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   };
 
   const histPath = path.join(modelDir, "training_history.json");
@@ -230,15 +253,35 @@ export async function runTraining(job = {}) {
   // Upload files to Supabase storage under bucket 'models' in folder version/
   const baseKey = `${version}/`;
   log("Uploading artifacts to Supabase storage at:", baseKey);
-  await uploadFileToBucket(path.join(modelDir, "model.json"), `${baseKey}model.json`, "application/json");
+  await uploadFileToBucket(
+    path.join(modelDir, "model.json"),
+    `${baseKey}model.json`,
+    "application/json"
+  );
   // weights.bin is usually present under modelDir
   const weightsPath = path.join(modelDir, "weights.bin");
   if (fs.existsSync(weightsPath)) {
-    await uploadFileToBucket(weightsPath, `${baseKey}weights.bin`, "application/octet-stream");
+    await uploadFileToBucket(
+      weightsPath,
+      `${baseKey}weights.bin`,
+      "application/octet-stream"
+    );
   }
-  await uploadFileToBucket(labelsPath, `${baseKey}labels.json`, "application/json");
-  await uploadFileToBucket(mapPath, `${baseKey}label_map.json`, "application/json");
-  await uploadFileToBucket(histPath, `${baseKey}training_history.json`, "application/json");
+  await uploadFileToBucket(
+    labelsPath,
+    `${baseKey}labels.json`,
+    "application/json"
+  );
+  await uploadFileToBucket(
+    mapPath,
+    `${baseKey}label_map.json`,
+    "application/json"
+  );
+  await uploadFileToBucket(
+    histPath,
+    `${baseKey}training_history.json`,
+    "application/json"
+  );
 
   // create record in model_versions table
   const { error: insertError } = await supabase.from("model_versions").insert([
@@ -247,8 +290,8 @@ export async function runTraining(job = {}) {
       accuracy: Number((testAcc * 100).toFixed(2)),
       loss: Number(testLoss.toFixed(4)),
       file_path: `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${baseKey}model.json`,
-      created_at: new Date().toISOString()
-    }
+      created_at: new Date().toISOString(),
+    },
   ]);
 
   if (insertError) throw insertError;
@@ -260,12 +303,15 @@ export async function runTraining(job = {}) {
     version,
     accuracy: Number((testAcc * 100).toFixed(2)),
     loss: Number(testLoss.toFixed(4)),
-    labels
+    labels,
   };
 }
 
 // If called directly: run one-off
-if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith("train_model.mjs")) {
+if (
+  import.meta.url === `file://${process.argv[1]}` ||
+  process.argv[1]?.endsWith("train_model.mjs")
+) {
   (async () => {
     try {
       const res = await runTraining();

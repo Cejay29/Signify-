@@ -1,156 +1,150 @@
-import { useEffect, useRef, useState } from "react";
+// src/hooks/useGestureEngine.js
+import { useRef, useState, useCallback } from "react";
 
-/**
- * Handles arcade scoring, timer, and round logic.
- */
 export default function useGestureEngine({
-  labels = [],
-  model = null,
-  onFinish = () => {},
-  targetPool = [],
-  roundTime = 30, // seconds
-  maxRounds = 10,
-  hardMode = false,
-  sounds = false,
+    labels,
+    model,
+    hardMode = false,
+    sounds = true,
+    onFinish,     // ({reason, score, streak, xp, gems})
+    targetPool,   // optional string[] to restrict targets
 }) {
-  const [target, setTarget] = useState(null);
-  const [time, setTime] = useState(roundTime);
-  const [score, setScore] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [countdown, setCountdown] = useState(3);
-  const timerRef = useRef(null);
-  const active = useRef(false);
-  const lastDetectedRef = useRef(null);
-  const correctHoldTime = useRef(0);
-  const currentRound = useRef(1);
+    const effectivePool = (targetPool?.length ? targetPool : labels) || [];
+    const [target, setTarget] = useState("—");
+    const [time, setTime] = useState(30);
+    const [score, setScore] = useState(0);
+    const [streak, setStreak] = useState(0);
+    const [active, setActive] = useState(false);
+    const [countdown, setCountdown] = useState(0);
 
-  /* ---------------------- Utility functions ---------------------- */
+    const timerRef = useRef(null);
+    const bufferRef = useRef([]);
+    const lastTopRef = useRef("-");
+    const agreeRef = useRef(0);
+    const hitCooldownRef = useRef(false);
+    const lastHitTargetRef = useRef(null);
 
-  function pickRandomTarget() {
-    if (!targetPool?.length) return null;
-    const pool = [...targetPool];
-    return pool[Math.floor(Math.random() * pool.length)];
-  }
-
-  function playSound(type) {
-    if (!sounds) return;
-    const audio = new Audio(
-      type === "correct"
-        ? "/sounds/correct.mp3"
-        : type === "wrong"
-        ? "/sounds/wrong.mp3"
-        : "/sounds/start.mp3"
-    );
-    audio.volume = 0.3;
-    audio.play().catch(() => {});
-  }
-
-  /* ---------------------- Countdown before start ---------------------- */
-
-  function startCountdown() {
-    return new Promise((resolve) => {
-      let count = 3;
-      setCountdown(count);
-      const interval = setInterval(() => {
-        count -= 1;
-        setCountdown(count);
-        if (count <= 0) {
-          clearInterval(interval);
-          setCountdown(null);
-          resolve();
-        }
-      }, 1000);
-    });
-  }
-
-  /* ---------------------- Start/Stop/Reset ---------------------- */
-
-  async function start() {
-    if (active.current || !model || !labels?.length) return false;
-    setScore(0);
-    setStreak(0);
-    currentRound.current = 1;
-    correctHoldTime.current = 0;
-    setTime(roundTime);
-    setTarget(pickRandomTarget());
-    await startCountdown();
-    active.current = true;
-    playSound("start");
-
-    timerRef.current = setInterval(() => {
-      setTime((prev) => {
-        if (prev <= 1) {
-          stop("⏰ Time up!");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return true;
-  }
-
-  function stop(reason = "Stopped") {
-    if (!active.current) return;
-    active.current = false;
-    clearInterval(timerRef.current);
-    onFinish({ reason, score, streak });
-  }
-
-  function reset() {
-    setScore(0);
-    setStreak(0);
-    setTime(roundTime);
-    setTarget(null);
-    setCountdown(3);
-  }
-
-  /* ---------------------- Detection handler ---------------------- */
-
-  function handleDetect(label) {
-    if (!active.current || !target) return;
-
-    // ✅ Check if the detected sign matches the current target
-    if (label === target) {
-      correctHoldTime.current += 1;
-      if (correctHoldTime.current >= 5) {
-        // Held correct sign for 5 consecutive frames
-        const addScore = hardMode ? 20 : 10;
-        setScore((prev) => prev + addScore);
-        setStreak((prev) => prev + 1);
-        playSound("correct");
-
-        // Pick a new target
-        setTarget(pickRandomTarget());
-        correctHoldTime.current = 0;
-        currentRound.current += 1;
-
-        if (currentRound.current > maxRounds) {
-          stop("🏁 All rounds complete!");
-        }
-      }
-    } else {
-      // wrong sign resets hold time
-      correctHoldTime.current = 0;
+    function beep(freq = 600, ms = 120) {
+        if (!sounds) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.frequency.value = freq;
+            o.type = "sine";
+            o.connect(g);
+            g.connect(ctx.destination);
+            o.start();
+            g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + ms / 1000);
+            setTimeout(() => { o.stop(); ctx.close(); }, ms + 50);
+        } catch { }
     }
-  }
 
-  /* ---------------------- Cleanup ---------------------- */
-  useEffect(() => {
-    return () => {
-      clearInterval(timerRef.current);
+    const randomTarget = useCallback(() => {
+        if (!effectivePool?.length) return "A";
+        return effectivePool[Math.floor(Math.random() * effectivePool.length)];
+    }, [effectivePool]);
+
+    const reset = useCallback(() => {
+        setActive(false);
+        setTime(30);
+        setScore(0);
+        setStreak(0);
+        setTarget("—");
+        setCountdown(0);
+        bufferRef.current = [];
+        agreeRef.current = 0;
+        lastTopRef.current = "-";
+        hitCooldownRef.current = false;
+        lastHitTargetRef.current = null;
+        clearInterval(timerRef.current);
+    }, []);
+
+    const start = useCallback(() => {
+        if (!model || !labels?.length) return false;
+        reset();
+        // 3-2-1 countdown
+        let c = 3;
+        setCountdown(c);
+        const id = setInterval(() => {
+            c -= 1;
+            setCountdown(c);
+            if (c <= 0) {
+                clearInterval(id);
+                setCountdown(0);
+
+                setActive(true);
+                const first = randomTarget();
+                setTarget(first);
+                lastHitTargetRef.current = null;
+
+                timerRef.current = setInterval(() => {
+                    setTime((t) => {
+                        if (t <= 1) {
+                            clearInterval(timerRef.current);
+                            setActive(false);
+                            onFinish?.({ reason: "⏳ Time’s up!", score, streak });
+                            return 0;
+                        }
+                        return t - 1;
+                    });
+                }, 1000);
+            }
+        }, 1000);
+        return true;
+    }, [labels, model, onFinish, randomTarget, reset, score, streak]);
+
+    const stop = useCallback((reason = "🔚 Stopped") => {
+        clearInterval(timerRef.current);
+        setActive(false);
+        onFinish?.({ reason, score, streak });
+    }, [onFinish, score, streak]);
+
+    const handleDetect = useCallback((label) => {
+        if (!active || !label || label === "—") return;
+        const framesNeeded = hardMode ? 4 : 6;
+
+        bufferRef.current.push(label);
+        if (bufferRef.current.length > 9) bufferRef.current.shift();
+
+        const counts = bufferRef.current.reduce((m, c) => ((m[c] = (m[c] || 0) + 1), m), {});
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        const top = sorted[0]?.[0] || "?";
+        const topCount = sorted[0]?.[1] || 0;
+
+        if (top === lastTopRef.current) agreeRef.current++;
+        else { agreeRef.current = 1; lastTopRef.current = top; }
+
+        if (top !== target) return;
+
+        if (topCount >= 4 && agreeRef.current >= framesNeeded && !hitCooldownRef.current && lastHitTargetRef.current !== target) {
+            setStreak((s) => s + 1);
+            // Use *updated* streak in score bonus: pre-calc local
+            const nextStreak = streak + 1;
+            const bonus = Math.min(nextStreak - 1, 5);
+            const gained = 10 + bonus;
+            setScore((s) => s + gained);
+            beep(880, 80);
+
+            hitCooldownRef.current = true;
+            lastHitTargetRef.current = target;
+            setTimeout(() => { hitCooldownRef.current = false; }, 600);
+
+            let next = randomTarget();
+            let tries = 0;
+            while (next === target && tries < 5) { next = randomTarget(); tries++; }
+            setTarget(next);
+
+            bufferRef.current = [];
+            agreeRef.current = 0;
+            lastTopRef.current = "-";
+        }
+    }, [active, hardMode, randomTarget, target, streak]);
+
+    return {
+        // state
+        target, time, score, streak, active, countdown,
+        // controls
+        start, stop, reset, handleDetect,
     };
-  }, []);
-
-  return {
-    target,
-    time,
-    score,
-    streak,
-    countdown,
-    start,
-    stop,
-    reset,
-    handleDetect,
-  };
 }
