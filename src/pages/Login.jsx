@@ -226,11 +226,12 @@ export default function Login() {
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            {/* Email */}
             <div className="relative">
               <Mail
-                className="absolute top-1/2 -translate-y-1/2 left-4"
                 size={18}
-                style={{ stroke: "#FF3F7F" }} // overrides all CSS
+                className="absolute top-1/2 -translate-y-1/2 left-4"
+                style={{ color: "#FF3F7F" }} // ✅ FIXED COLOR
               />
 
               <input
@@ -239,47 +240,50 @@ export default function Login() {
                 required
                 placeholder="Email"
                 className="
-      w-full px-4 py-3 pl-12 
-      rounded-2xl border border-[#d7c9ff]
-      bg-white/70 backdrop-blur-sm
-      shadow-inner 
-      focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
-      outline-none transition
-    "
+        w-full px-4 py-3 pl-12 
+        rounded-2xl border border-[#d7c9ff]
+        bg-white/70 backdrop-blur-sm
+        shadow-inner 
+        focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
+        outline-none transition
+      "
               />
             </div>
 
             {/* Password */}
             <div className="relative">
               <Lock
-                className="absolute top-1/2 -translate-y-1/2 left-4"
                 size={18}
-                style={{ stroke: "#FF3F7F" }} // overrides all CSS
+                className="absolute top-1/2 -translate-y-1/2 left-4"
+                style={{ color: "#FF3F7F" }} // ✅ FIXED COLOR
               />
+
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 required
                 placeholder="Password"
                 className="
-      w-full px-4 py-3 pl-12 pr-12
-      rounded-2xl border border-[#d7c9ff]
-      bg-white/70 backdrop-blur-sm
-      shadow-inner
-      focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
-      outline-none transition
-    "
+        w-full px-4 py-3 pl-12 pr-12
+        rounded-2xl border border-[#d7c9ff]
+        bg-white/70 backdrop-blur-sm
+        shadow-inner
+        focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
+        outline-none transition
+      "
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8C00FF]"
+                className="absolute right-4 top-1/2 -translate-y-1/2"
+                style={{ color: "#8C00FF" }} // password toggle color
               >
                 {showPassword ? <EyeOff /> : <Eye />}
               </button>
             </div>
 
+            {/* Forgot Password */}
             <button
               type="button"
               onClick={() => setForgotOpen(true)}
@@ -288,6 +292,7 @@ export default function Login() {
               Forgot Password?
             </button>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
