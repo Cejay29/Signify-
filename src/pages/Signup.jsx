@@ -121,25 +121,67 @@ export default function Signup() {
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
       {/* Background shapes */}
       <div className="absolute inset-0 pointer-events-none z-0">
+        {/* UPPER LEFT – BIGGER */}
         <img
           src="/bg/upper-left.png"
-          className="absolute top--20 left-0 w-32 sm:w-40 md:w-56 lg:w-72 xl:w-80"
+          className="absolute top-[-30px] left-[-20px]
+    w-48 sm:w-60 md:w-80 lg:w-[380px] xl:w-[420px] opacity-90"
         />
+
+        {/* UPPER RIGHT – BIGGER */}
         <img
           src="/bg/upper-right.png"
-          className="absolute top-20 right-0 w-48 sm:w-60 md:w-80 lg:w-[380px] xl:w-[420px]"
+          className="absolute top-[-10px] right-[-10px]
+    w-56 sm:w-72 md:w-[420px] lg:w-[480px] opacity-80"
         />
+
+        {/* BOTTOM LEFT – BIGGER */}
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-0 left-0 w-40 sm:w-56 md:w-72 lg:w-96 opacity-70"
+          className="absolute bottom-[-20px] left-[-10px]
+    w-56 sm:w-72 md:w-96 lg:w-[500px] opacity-70"
         />
+
+        {/* BOTTOM RIGHT – BIGGER */}
         <img
           src="/bg/lower-right.png"
-          className="absolute bottom-0 right-0 w-48 sm:w-72 md:w-96 lg:w-[420px] xl:w-[480px] opacity-30"
+          className="absolute bottom-[-20px] right-[-10px]
+    w-56 sm:w-72 md:w-[420px] lg:w-[480px] opacity-40"
         />
+
+        {/* CENTER LEFT – BIGGER */}
         <img
           src="/bg/shape-center.png"
-          className="absolute top-[150px] left-[25%] w-60 sm:w-72 md:w-[360px] lg:w-[480px] xl:w-[520px] rotate-[-8deg] opacity-70"
+          className="absolute top-[20%] left-[10%]
+    w-56 sm:w-72 md:w-[400px] lg:w-[460px] opacity-45 rotate-[12deg]"
+        />
+
+        {/* CENTER RIGHT – NEW SHAPE */}
+        <img
+          src="/bg/shape-center.png"
+          className="absolute top-[40%] right-[12%]
+    w-56 sm:w-72 md:w-[380px] lg:w-[440px] opacity-40 rotate-[-10deg]"
+        />
+
+        {/* CENTER BEHIND CARD – LIGHT FILL */}
+        <img
+          src="/bg/shape-center.png"
+          className="absolute top-[35%] left-[45%]
+    w-44 sm:w-56 md:w-72 lg:w-[340px] opacity-25 rotate-[20deg]"
+        />
+
+        {/* EXTRA SMALL SHAPE – MID LEFT */}
+        <img
+          src="/bg/upper-left.png"
+          className="absolute top-[50%] left-[25%]
+    w-28 sm:w-36 md:w-44 opacity-25 rotate-[18deg]"
+        />
+
+        {/* EXTRA SMALL SHAPE – MID RIGHT */}
+        <img
+          src="/bg/lower-right.png"
+          className="absolute top-[55%] right-[28%]
+    w-24 sm:w-32 md:w-40 opacity-20 rotate-[-18deg]"
         />
       </div>
 
