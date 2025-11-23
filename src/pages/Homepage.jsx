@@ -1,3 +1,4 @@
+// Homepage.jsx
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { supabase } from "../lib/supabaseClient";
@@ -95,13 +96,15 @@ export default function Homepage() {
   }
 
   return (
-    <div className="relative flex min-h-screen bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] text-white overflow-hidden font-[Inter]">
+    <div className="relative flex min-h-screen font-['Inter'] bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] text-white overflow-hidden">
 
-      {/* 🌟 Background Floating Shapes */}
-      <img src="/bg/upper-left.png" className="absolute top-[-100px] left-[-80px] w-72 opacity-60 pointer-events-none" />
-      <img src="/bg/upper-right.png" className="absolute top-[-140px] right-[-60px] w-96 opacity-60 pointer-events-none" />
-      <img src="/bg/shape-bottom-left.png" className="absolute bottom-[-180px] left-[-90px] w-96 opacity-70 pointer-events-none" />
-      <img src="/bg/lower-right.png" className="absolute bottom-[-150px] right-[-60px] w-96 opacity-40 pointer-events-none" />
+      {/* 🌟 Background Decorative Shapes */}
+      <img src="/bg/upper-left.png" className="absolute top-[-120px] left-[-80px] w-72 opacity-70 pointer-events-none" />
+      <img src="/bg/upper-right.png" className="absolute top-[-140px] right-[-60px] w-96 opacity-80 pointer-events-none" />
+      <img src="/bg/shape-center.png" className="absolute top-[20%] left-[10%] w-72 opacity-40 rotate-[15deg] pointer-events-none" />
+      <img src="/bg/shape-center.png" className="absolute top-[50%] right-[12%] w-64 opacity-30 rotate-[-20deg] pointer-events-none" />
+      <img src="/bg/shape-bottom-left.png" className="absolute bottom-[-150px] left-[-80px] w-96 opacity-50 pointer-events-none" />
+      <img src="/bg/lower-right.png" className="absolute bottom-[-160px] right-[-60px] w-96 opacity-40 pointer-events-none" />
 
       {/* Sidebar */}
       <Sidebar onLogout={logout} />
@@ -109,36 +112,39 @@ export default function Homepage() {
       {/* MAIN CONTENT */}
       <main
         className="
-          flex-1 overflow-y-auto p-10
+          flex-1 overflow-y-auto p-10 relative z-10
           md:ml-16 xl:ml-[250px]
         "
       >
-
         {/* HUD */}
-        <header className="fixed top-6 right-8 flex items-center gap-4 bg-white/20 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-xl border border-white/40 z-20">
-          <div className="flex items-center gap-2">
+        <header className="fixed top-6 right-8 flex items-center gap-4 bg-white/20 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg border border-white/40 z-20">
+          <div className="hud-pill flex items-center gap-1">
             <img src="/img/fire.png" className="w-6 h-6" />
-            <span className="font-bold">{stats.streak}</span>
+            <span>{stats.streak}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="hud-pill flex items-center gap-1">
             <img src="/img/gem.png" className="w-6 h-6" />
-            <span className="font-bold">{stats.gems}</span>
+            <span>{stats.gems}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="hud-pill flex items-center gap-1">
             <img src="/img/heart.png" className="w-6 h-6" />
-            <span className="font-bold">{stats.hearts}</span>
+            <span>{stats.hearts}</span>
           </div>
         </header>
 
-        {/* TITLE */}
-        <h1 className="text-4xl font-extrabold text-center mt-32 mb-10 drop-shadow-lg text-yellow-300">
-          Your Learning Path
+        {/* Title */}
+        <h1 className="text-4xl text-center font-extrabold mt-32 mb-8 text-yellow-300 drop-shadow-lg">
+          Choose Your Lesson
         </h1>
 
-        {/* LEVEL + LESSON BUBBLE PATH */}
-        <section className="flex flex-col items-center gap-24 pb-20">
+        {/* LEVEL + LESSON CARDS */}
+        <section className="flex flex-col items-center gap-12 pb-20">
           {levels.map((level, i) => {
             const levelLessons = lessons.filter((l) => l.level_id === level.id);
+            const completedCount = levelLessons.filter((l) =>
+              completed.has(l.id)
+            ).length;
+
             const unlocked =
               i === 0 ||
               levels.slice(0, i).every((prev) => {
@@ -152,23 +158,40 @@ export default function Homepage() {
               });
 
             return (
-              <div key={level.id} className="flex flex-col items-center w-full">
-                {/* UNIT BUBBLE */}
-                <div
-                  className="
-                    bg-white/90 text-[#450693] px-6 py-4
-                    rounded-full shadow-2xl text-xl font-bold
-                    border-2 border-[#FFC400]
-                    backdrop-blur-xl
-                    animate-fade-in-up
-                    mb-6
-                  "
-                >
-                  Unit {level.order}: {level.title}
+              <div
+                key={level.id}
+                className="
+                  w-full max-w-4xl
+                  bg-white/15 backdrop-blur-xl
+                  p-6 rounded-3xl shadow-2xl border border-white/30
+                  animate-fade-in-up
+                "
+              >
+                {/* UNIT HEADER */}
+                <div className="mb-4">
+                  <div className="text-yellow-300 text-sm font-semibold uppercase tracking-wider">
+                    Unit {level.order}
+                  </div>
+                  <div className="text-2xl font-extrabold">{level.title}</div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden mt-3">
+                    <div
+                      className="h-full bg-yellow-300"
+                      style={{
+                        width: `${(completedCount / levelLessons.length) * 100 || 0
+                          }%`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="text-sm text-white/70 mt-1">
+                    {completedCount}/{levelLessons.length} completed
+                  </div>
                 </div>
 
-                {/* CURVED PATH OF BUBBLES */}
-                <div className="flex flex-col gap-10 w-full items-center relative">
+                {/* LESSON CARDS */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   {levelLessons.map((lesson, idx) => {
                     const done = completed.has(lesson.id);
                     const prev = levelLessons[idx - 1];
@@ -185,37 +208,42 @@ export default function Homepage() {
                           )
                         }
                         className={`
-                          relative flex flex-col items-center justify-center
-                          w-44 h-44 rounded-full
-                          text-center p-4 transition-all
-                          shadow-xl border-4
+                          flex justify-between items-center px-5 py-4 rounded-2xl
+                          shadow-md transition-all border
                           ${!lessonUnlocked
-                            ? "bg-gray-400 border-gray-300 opacity-40"
+                            ? "bg-white/10 border-white/20 text-white/40"
                             : done
-                              ? "bg-gradient-to-br from-[#27E1C1] to-[#00a896] border-[#C5FFE1]"
-                              : "bg-gradient-to-br from-[#FFC400] to-[#FF3F7F] border-white cursor-pointer hover:scale-105"
+                              ? "bg-gradient-to-r from-green-400 to-green-600 text-white border-green-300 shadow-xl hover:scale-[1.02]"
+                              : "bg-gradient-to-br from-[#FFC400] to-[#FF3F7F] text-[#1C1B2E] border-white shadow-xl hover:scale-[1.03]"
                           }
                         `}
                       >
-                        <span className="text-lg font-bold drop-shadow-md text-white">
-                          {lesson.title}
-                        </span>
-
-                        {done ? (
-                          <Check className="w-10 h-10 mt-2 text-white drop-shadow-lg" />
-                        ) : !lessonUnlocked ? (
-                          <Lock className="w-10 h-10 mt-2 text-gray-700" />
-                        ) : (
-                          <span className="text-xs font-semibold mt-3 text-white drop-shadow-lg">
-                            +{lesson.xp_reward} XP · +{lesson.gem_reward} Gems
+                        <div>
+                          <span className="font-bold flex items-center gap-1 text-lg">
+                            {lesson.title}
+                            {!lessonUnlocked ? (
+                              <Lock className="w-4 h-4" />
+                            ) : (
+                              done && <Check className="w-4 h-4" />
+                            )}
                           </span>
-                        )}
+                          <span className="text-sm opacity-80">
+                            {done
+                              ? "Completed"
+                              : !lessonUnlocked
+                                ? "Locked"
+                                : "Start Lesson"}
+                          </span>
+                        </div>
+
+                        {/* XP/Gems */}
+                        <div className="text-right text-sm font-bold opacity-90">
+                          +{lesson.xp_reward} XP
+                          <br />+{lesson.gem_reward} Gems
+                        </div>
                       </button>
                     );
                   })}
-
-                  {/* Connector Line */}
-                  <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-white/30"></div>
                 </div>
               </div>
             );
