@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { supabase } from "../lib/supabaseClient";
 import { loadGestureLibraries } from "../utils/libLoader";
 import { normalize } from "../utils/normalize";
-import { checkArcadeAchievements } from "../lib/arcadeAchievementChecker";
+import { checkArcadeAchievements } from "../hooks/arcade/arcadeAchievementChecker";
 import useGestureModel from "../hooks/useGestureModel";
 import useHands from "../hooks/useHands";
 import AchievementPopup from "../components/AchievementPopup";
