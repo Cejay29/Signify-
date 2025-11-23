@@ -224,6 +224,11 @@ export default function Arcade() {
   const [category, setCategory] = useState("all");
   const [customPool, setCustomPool] = useState([]);
 
+  const [popup, setPopup] = useState({
+    visible: false,
+    title: "",
+    rarity: "common",
+  });
 
   // ----- auth + logout -----
   const handleLogout = async () => {
