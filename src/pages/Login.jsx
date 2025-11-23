@@ -77,75 +77,68 @@ export default function Login() {
 
   return (
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
-      {/* Background shapes */}
-      {/* Background shapes */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* TOP LEFT — BIGGER */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {/* UPPER LEFT – BIGGER */}
         <img
-          src="/bg/shape-top-left.png"
-          className="absolute top-[-40px] left-[-30px] 
-    w-56 sm:w-72 md:w-96 opacity-90 rotate-[18deg]"
+          src="/bg/upper-left.png"
+          className="absolute top-[-30px] left-[-20px]
+    w-48 sm:w-60 md:w-80 lg:w-[380px] xl:w-[420px] opacity-90"
         />
 
-        {/* TOP RIGHT — BIGGER */}
+        {/* UPPER RIGHT – BIGGER */}
         <img
-          src="/bg/shape-top-right.png"
-          className="absolute top-[-30px] right-[-20px] 
-    w-56 sm:w-72 md:w-96 opacity-90 rotate-[-12deg]"
+          src="/bg/upper-right.png"
+          className="absolute top-[-10px] right-[-10px]
+    w-56 sm:w-72 md:w-[420px] lg:w-[480px] opacity-80"
         />
 
-        {/* BOTTOM LEFT — BIGGER */}
+        {/* BOTTOM LEFT – BIGGER */}
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-[-40px] left-[-20px] 
-    w-60 sm:w-80 md:w-[420px] opacity-70 rotate-[15deg]"
+          className="absolute bottom-[-20px] left-[-10px]
+    w-56 sm:w-72 md:w-96 lg:w-[500px] opacity-70"
         />
 
-        {/* BOTTOM RIGHT — BIGGER */}
+        {/* BOTTOM RIGHT – BIGGER */}
         <img
-          src="/bg/shape-bottom-kanan.png"
-          className="absolute bottom-[-20px] right-[-20px] 
-    w-52 sm:w-72 md:w-96 opacity-50 rotate-[-10deg]"
+          src="/bg/lower-right.png"
+          className="absolute bottom-[-20px] right-[-10px]
+    w-56 sm:w-72 md:w-[420px] lg:w-[480px] opacity-40"
         />
 
-        {/* CENTER-LEFT BIG SHAPE */}
-        <img
-          src="/bg/shape-center.png"
-          className="absolute top-[22%] left-[10%] 
-    w-56 sm:w-72 md:w-96 opacity-45 rotate-[25deg]"
-        />
-
-        {/* CENTER-RIGHT BIG SHAPE */}
+        {/* CENTER LEFT – BIGGER */}
         <img
           src="/bg/shape-center.png"
-          className="absolute top-[50%] right-[8%] 
-    w-64 sm:w-80 md:w-[420px] opacity-40 rotate-[-15deg]"
+          className="absolute top-[20%] left-[10%]
+    w-56 sm:w-72 md:w-[400px] lg:w-[460px] opacity-45 rotate-[12deg]"
         />
 
-        {/* DIRECT CENTER FILL — LARGE SOFT SHAPE */}
+        {/* CENTER RIGHT – NEW SHAPE */}
         <img
           src="/bg/shape-center.png"
-          className="absolute top-[40%] left-[42%] 
-    w-48 sm:w-64 md:w-80 opacity-30 rotate-[30deg]"
+          className="absolute top-[40%] right-[12%]
+    w-56 sm:w-72 md:w-[380px] lg:w-[440px] opacity-40 rotate-[-10deg]"
         />
 
-        {/* EXTRA SMALL FLOATING SHAPES — BIGGER & SCATTERED */}
+        {/* CENTER BEHIND CARD – LIGHT FILL */}
         <img
-          src="/bg/shape-small.png"
-          className="absolute top-[30%] left-[45%] 
-    w-24 sm:w-32 opacity-35 rotate-[22deg]"
+          src="/bg/shape-center.png"
+          className="absolute top-[35%] left-[45%]
+    w-44 sm:w-56 md:w-72 lg:w-[340px] opacity-25 rotate-[20deg]"
         />
 
+        {/* EXTRA SMALL SHAPE – MID LEFT */}
         <img
-          src="/bg/shape-small.png"
-          className="absolute top-[60%] left-[52%] 
-    w-20 sm:w-28 opacity-30 rotate-[-20deg]"
+          src="/bg/upper-left.png"
+          className="absolute top-[50%] left-[25%]
+    w-28 sm:w-36 md:w-44 opacity-25 rotate-[18deg]"
         />
 
+        {/* EXTRA SMALL SHAPE – MID RIGHT */}
         <img
-          src="/bg/shape-small.png"
-          className="absolute top-[38%] right-[32%] 
-    w-20 sm:w-28 opacity-35 rotate-[12deg]"
+          src="/bg/lower-right.png"
+          className="absolute top-[55%] right-[28%]
+    w-24 sm:w-32 md:w-40 opacity-20 rotate-[-18deg]"
         />
       </div>
 
