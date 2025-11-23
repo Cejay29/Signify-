@@ -812,8 +812,7 @@ export default function Arcade() {
           <div className="flex flex-wrap gap-3">
             {[
               { id: "all", label: "All Signs" },
-              { id: "alphabet", label: "Alphabet (A–Z)" },
-              { id: "numbers", label: "Numbers (0–9)" },
+              { id: "alphabet", label: "Alphabet (A–Z & Number (1-9))" },
               { id: "lessons", label: "Lesson Signs" },
               { id: "custom", label: "Custom Mix" },
             ].map((cat) => (
