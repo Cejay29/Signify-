@@ -20,6 +20,11 @@ export default function Playfulbackground() {
       <Bubble className="bottom-10 right-16 h-8 w-8 bg-[#FF3F7F]/25 animate-bubble-slow" />
       <Bubble className="top-1/4 right-1/3 h-20 w-20 bg-[#8C00FF]/15 animate-bubble-slower" />
 
+      {/* Soft twinkling sparkle */}
+      <div className="absolute top-1/3 left-1/2 animate-twinkle pointer-events-none">
+        <div className="h-10 w-10 bg-[#FFC400]/40 rounded-full blur-xl"></div>
+      </div>
+
       {/* Subtle dotted grid */}
       <div className="absolute inset-0 opacity-[0.07]">
         <div className="h-full w-full bg-[radial-gradient(circle_at_1px_1px,#450693_1px,transparent_0)] bg-[length:34px_34px]" />
