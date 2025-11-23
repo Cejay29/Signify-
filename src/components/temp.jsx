@@ -4,7 +4,7 @@ export default function PlayfulBackground() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-white"
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
       {/* Purple → Pink soft gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#450693]/20 via-[#8C00FF]/10 to-[#FF3F7F]/10" />
