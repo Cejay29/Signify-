@@ -1,4 +1,4 @@
-export default function PlayfulBackground() {
+export default function Playfulbackground() {
   return (
     <div
       aria-hidden="true"
