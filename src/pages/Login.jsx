@@ -23,6 +23,51 @@ export default function Login() {
     setTimeout(() => setToast(""), 2000);
   };
 
+  // ---------------------------------------------------
+  // ✅ AUTO-CREATE USER PROFILE AFTER LOGIN (SAFE FOR RLS)
+  // ---------------------------------------------------
+  async function ensureUserProfile(user) {
+    if (!user) return;
+
+    const { id, email, user_metadata } = user;
+
+    // Check if profile exists
+    const { data: existing, error: checkError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (existing) {
+      console.log("User profile already exists");
+      return;
+    }
+
+    // Insert new profile
+    const { error: insertError } = await supabase.from("users").insert({
+      id,
+      username: user_metadata?.firstName || "",
+      email,
+      birthday: user_metadata?.birthday || null,
+      gender: user_metadata?.gender || null,
+      xp: 0,
+      gems: 0,
+      level: 1,
+      hearts: 5,
+      streak: 0,
+      last_active: new Date().toISOString(),
+    });
+
+    if (insertError) {
+      console.error("Failed to auto-create profile:", insertError);
+    } else {
+      console.log("Profile created!");
+    }
+  }
+
+  // ---------------------------------------------------
+  // LOGIN HANDLER
+  // ---------------------------------------------------
   async function handleLogin(e) {
     e.preventDefault();
     setLoading(true);
@@ -36,22 +81,24 @@ export default function Login() {
     });
 
     if (error) {
-      showToastMsg(error.message);
       setLoading(false);
-      return;
+      return showToastMsg(error.message);
     }
 
+    // Require email verification
     if (!data.user.email_confirmed_at) {
-      showToastMsg("Please verify your email first.");
       setLoading(false);
-      return;
+      return showToastMsg("Please verify your email first.");
     }
 
-    const userId = data.user.id;
+    // 🔥 Auto-create missing row in "users"
+    await ensureUserProfile(data.user);
+
+    // Check if admin
     const { data: adminData } = await supabase
       .from("admin_users")
       .select("*")
-      .eq("id", userId)
+      .eq("id", data.user.id)
       .maybeSingle();
 
     showToastMsg("Login successful!", "bg-green-600");
@@ -71,40 +118,33 @@ export default function Login() {
     });
 
     if (error) return showToastMsg(error.message);
+
     showToastMsg("Reset link sent!", "bg-green-600");
     setForgotOpen(false);
   }
 
+  // ---------------------------------------------------
+  // UI + DESIGN (unchanged)
+  // ---------------------------------------------------
   return (
     <div className="bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] min-h-screen flex items-center justify-center relative font-[Inter] overflow-hidden">
-      {/* Background shapes */}
+      {/* Background Shapes */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        {/* UPPER LEFT */}
         <img
           src="/bg/upper-left.png"
-          className="absolute top-[-100px] left-[-80px]
-    w-64 sm:w-72 md:w-80 lg:w-[380px] xl:w-[420px] opacity-75"
+          className="absolute top-[-100px] left-[-80px] w-72 sm:w-80 md:w-[420px] opacity-80"
         />
-
-        {/* UPPER RIGHT */}
         <img
           src="/bg/upper-right.png"
-          className="absolute top-[-120px] right-[-80px]
-    w-72 sm:w-80 md:w-[420px] lg:w-[480px] opacity-75"
+          className="absolute top-[-120px] right-[-80px] w-80 sm:w-[420px] md:w-[480px] opacity-80"
         />
-
-        {/* BOTTOM LEFT */}
         <img
           src="/bg/shape-bottom-left.png"
-          className="absolute bottom-[-150px] left-[-80px]
-    w-72 sm:w-96 md:w-[500px] lg:w-[580px] opacity-55"
+          className="absolute bottom-[-150px] left-[-80px] w-80 sm:w-[450px] md:w-[520px] opacity-60"
         />
-
-        {/* BOTTOM RIGHT */}
         <img
           src="/bg/lower-right.png"
-          className="absolute bottom-[-160px] right-[-80px]
-    w-72 sm:w-96 md:w-[500px] lg:w-[580px] opacity-35"
+          className="absolute bottom-[-160px] right-[-80px] w-80 sm:w-[450px] md:w-[520px] opacity-40"
         />
       </div>
 
@@ -129,7 +169,7 @@ export default function Login() {
       <div className="z-10 w-full max-w-md px-6">
         <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border-2 border-[#FFC400] relative">
           {/* Mascot Glow */}
-          <div className="pointer-events-none absolute -top-12 -right-10 h-36 w-36 bg-[#FF3F7F]/20 rounded-full blur-3xl" />
+          <div className="absolute -top-12 -right-10 h-36 w-36 bg-[#FF3F7F]/20 rounded-full blur-3xl" />
 
           {/* Mascot */}
           <div className="flex flex-col items-center mb-5">
@@ -143,6 +183,7 @@ export default function Login() {
             <h2 className="text-3xl font-extrabold text-[#8C00FF] mt-3">
               Welcome Back!
             </h2>
+
             <p className="text-sm text-[#450693]/80 flex items-center gap-1 mt-1">
               It's time to start signing again!
               <Hand size={16} className="text-[#8C00FF]" />
@@ -150,7 +191,7 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Form */}
+          {/* Login Form */}
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             {/* Email */}
             <div className="relative">
@@ -189,7 +230,7 @@ export default function Login() {
               </button>
             </div>
 
-            {/* Forgot Password */}
+            {/* Forgot password */}
             <button
               type="button"
               onClick={() => setForgotOpen(true)}
@@ -202,7 +243,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className={`py-3 rounded-xl text-white font-semibold shadow-lg transition flex items-center justify-center gap-2 ${
+              className={`py-3 rounded-xl text-white font-semibold shadow-lg flex items-center justify-center gap-2 transition ${
                 loading
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F] hover:opacity-90"
@@ -247,8 +288,8 @@ export default function Login() {
                 type="email"
                 name="resetEmail"
                 placeholder="Your email"
-                className="p-3 rounded-xl border bg-[#F9F5FF] focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
                 required
+                className="p-3 rounded-xl border bg-[#F9F5FF] focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40 transition"
               />
 
               <div className="flex justify-end gap-2">

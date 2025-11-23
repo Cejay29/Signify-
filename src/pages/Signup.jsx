@@ -92,29 +92,15 @@ export default function Signup() {
       return showToastMsg(error.message);
     }
 
-    const user = data.user;
-
-    const { error: insertError } = await supabase.from("users").insert({
-      id: user.id,
-      username: form.firstName,
-      email: form.email,
-      birthday: form.birthday,
-      gender: form.gender,
-    });
-
-    if (insertError) {
-      setLoading(false);
-      return showToastMsg(insertError.message);
-    }
-
     showToastMsg(
-      <span className="flex items-center gap-2">
-        Signup successful! <PartyPopper size={16} />
-      </span>,
-      "bg-green-600"
-    );
+  <span className="flex items-center gap-2">
+    Signup successful! <PartyPopper size={16} />
+  </span>,
+  "bg-green-600"
+);
 
-    setTimeout(() => navigate("/login"), 1500);
+setTimeout(() => navigate("/login"), 1500);
+
   }
 
   return (
