@@ -239,7 +239,6 @@ export default function Login() {
                 className="
         w-full px-4 py-3 pl-12 
         rounded-2xl border border-[#d7c9ff]
-        bg-white/70 backdrop-blur-sm
         shadow-inner 
         focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
         outline-none transition
@@ -260,7 +259,6 @@ export default function Login() {
                 className="
         w-full px-4 py-3 pl-12 pr-12
         rounded-2xl border border-[#d7c9ff]
-        bg-white/70 backdrop-blur-sm
         shadow-inner
         focus:border-[#8C00FF] focus:ring-2 focus:ring-[#8C00FF]/40
         outline-none transition
