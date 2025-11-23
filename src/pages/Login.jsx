@@ -120,7 +120,7 @@ export default function Login() {
     await ensureUserProfile(data.user);
 
     await supabase.rpc("init_user_progress", {
-      new_user_id: user.id,
+      new_user_id: data.user.id,
     });
 
     // 🔥 Update streak
