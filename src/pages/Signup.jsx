@@ -1,7 +1,18 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { Eye, EyeOff, Check, X, Mail, Lock } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Check,
+  X,
+  Mail,
+  Lock,
+  PartyPopper,
+  Hand,
+  MessageCircle,
+  Sparkles,
+} from "lucide-react";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -85,7 +96,13 @@ export default function Signup() {
 
     if (insertError) return showToastMsg(insertError.message);
 
-    showToastMsg("Signup successful! 🎉", "bg-green-600");
+    showToastMsg(
+      <span className="flex items-center gap-2">
+        Signup successful! <PartyPopper size={16} />
+      </span>,
+      "bg-green-600"
+    );
+
     setTimeout(() => navigate("/login"), 1500);
   }
 
@@ -159,7 +176,10 @@ export default function Signup() {
                 Let&apos;s create your account!
               </h1>
               <p className="text-xs sm:text-sm text-[#450693]/80 mt-1">
-                Join a playful world where your hands do the talking. ✋💬
+                Join a playful world where your hands do the talking.
+                <span className="inline-flex items-center gap-1 ml-2 text-[#8C00FF]">
+                  <Hand size={16} /> <MessageCircle size={16} />
+                </span>
               </p>
             </div>
 
@@ -170,7 +190,8 @@ export default function Signup() {
                 <div className="h-full w-full bg-gradient-to-r from-[#8C00FF] to-[#FF3F7F]" />
               </div>
               <span className="font-semibold text-[#FF3F7F]">
-                Almost ready ✨
+                Almost ready{" "}
+                <Sparkles size={14} className="inline ml-1 text-[#FF3F7F]" />
               </span>
             </div>
           </div>
@@ -356,7 +377,8 @@ export default function Signup() {
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
-              Start signing with Signify ✋
+              Start signing with Signify
+              <Hand size={18} className="inline ml-2" />
             </button>
 
             <Link
