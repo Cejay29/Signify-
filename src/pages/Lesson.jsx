@@ -30,27 +30,51 @@ export default function Lesson() {
 
   const [showExit, setShowExit] = useState(false);
 
-  // Compute progress
   const progressPct = steps.length > 0 ? ((idx + 1) / steps.length) * 100 : 0;
 
   const next = () => setIdx((i) => i + 1);
 
   return (
-    <div className="bg-[#1C1B2E] text-white font-sans min-h-screen">
-      {/* HEADER */}
+    <div
+      className="
+      relative min-h-screen font-['Inter'] text-white overflow-hidden
+      bg-gradient-to-br from-[#70385E] via-[#4A2541] to-[#2E1426]
+    "
+    >
+      {/* Background Shapes */}
+      <img
+        src="/bg/upper-left.png"
+        className="absolute top-[-120px] left-[-80px] w-64 opacity-35 pointer-events-none"
+      />
+      <img
+        src="/bg/upper-right.png"
+        className="absolute top-[-140px] right-[-60px] w-72 opacity-40 pointer-events-none"
+      />
+      <img
+        src="/bg/shape-center.png"
+        className="absolute top-[18%] left-[8%] w-64 opacity-20 rotate-[10deg] pointer-events-none"
+      />
+      <img
+        src="/bg/shape-center.png"
+        className="absolute bottom-[20%] right-[12%] w-64 opacity-15 rotate-[-20deg] pointer-events-none"
+      />
+
+      {/* LESSON HEADER */}
       <LessonHeader
         hearts={hearts}
         progressPct={progressPct}
         onExit={() => setShowExit(true)}
       />
 
-      {/* BODY */}
+      {/* MAIN LESSON BODY */}
       <div
         id="lesson-container-react"
-        className="pt-28 md:pt-32 px-4 md:px-6 max-w-6xl mx-auto"
+        className="pt-28 md:pt-32 px-4 md:px-6 max-w-6xl mx-auto relative z-20"
       >
         {loading && (
-          <div className="text-center text-gray-300">Loading lesson…</div>
+          <div className="text-center text-white/70 text-lg">
+            Loading lesson…
+          </div>
         )}
 
         {!loading && !done && current && (
@@ -82,26 +106,41 @@ export default function Lesson() {
         )}
       </div>
 
-      {/* EXIT MODAL */}
+      {/* EXIT CONFIRMATION MODAL */}
       {showExit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#24243A] rounded-xl p-6 w-80 text-center">
-            <h2 className="text-xl font-bold mb-4 text-white">Exit Lesson?</h2>
-            <p className="mb-6 text-gray-300 text-sm">
-              Your progress may not be saved.
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div
+            className="
+            bg-white/10 backdrop-blur-xl border border-white/20 
+            p-6 rounded-2xl w-80 shadow-xl
+          "
+          >
+            <h2 className="text-xl font-bold text-[#FFE4FB] mb-3">
+              Exit Lesson?
+            </h2>
+
+            <p className="text-white/70 text-sm mb-6">
+              Your progress for this lesson may not be saved.
             </p>
 
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setShowExit(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                className="
+                px-4 py-2 rounded-lg bg-white/10 border border-white/20
+                text-white hover:bg-white/20 transition
+              "
               >
                 Cancel
               </button>
 
               <button
-                onClick={() => navigate("/homepage")}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={() => navigate('/homepage')}
+                className="
+                px-4 py-2 rounded-lg 
+                bg-gradient-to-r from-[#FF6AA5] to-[#FFC400]
+                text-[#2E1426] font-bold shadow-lg hover:opacity-90 transition
+              "
               >
                 Exit
               </button>
@@ -113,28 +152,28 @@ export default function Lesson() {
       {/* ANIMATIONS */}
       <style>
         {`
-        @keyframes flash-green { 
-          0%{background-color:transparent} 
-          50%{background-color:#32CD32} 
-          100%{background-color:transparent} 
-        }
+          @keyframes flash-green { 
+            0%{background-color:transparent} 
+            50%{background-color:#32CD32} 
+            100%{background-color:transparent} 
+          }
 
-        @keyframes flash-red { 
-          0%{background-color:transparent} 
-          50%{background-color:#FF4D4F} 
-          100%{background-color:transparent} 
-        }
+          @keyframes flash-red { 
+            0%{background-color:transparent} 
+            50%{background-color:#FF4D4F} 
+            100%{background-color:transparent} 
+          }
 
-        @keyframes shake { 
-          0%,100%{transform:translateX(0)} 
-          25%{transform:translateX(-6px)} 
-          75%{transform:translateX(6px)} 
-        }
+          @keyframes shake { 
+            0%,100%{transform:translateX(0)} 
+            25%{transform:translateX(-6px)} 
+            75%{transform:translateX(6px)} 
+          }
 
-        .flash-green{ animation:flash-green .6s ease-in-out }
-        .flash-red{ animation:flash-red .6s ease-in-out }
-        .shake{ animation:shake .4s ease-in-out }
-      `}
+          .flash-green{ animation:flash-green .6s ease-in-out }
+          .flash-red{ animation:flash-red .6s ease-in-out }
+          .shake{ animation:shake .4s ease-in-out }
+        `}
       </style>
     </div>
   );
