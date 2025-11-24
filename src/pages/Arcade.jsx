@@ -9,23 +9,31 @@ import useGestureModel from "../hooks/useGestureModel";
 import useHands from "../hooks/useHands";
 import AchievementPopup from "../components/AchievementPopup";
 
-
 /* ---------------- HUD ---------------- */
 
 function HUD({ hearts = 0, gems = 0, streak = 0 }) {
   return (
-    <header className="fixed top-6 right-8 flex items-center gap-4 bg-[#2A2A3C] px-5 py-3 rounded-2xl shadow-lg border border-[#C5CAFF] z-10">
-      <div className="hud-pill flex items-center gap-1">
+    <header
+      className="
+        fixed top-6 right-8 z-30
+        flex items-center gap-4
+        bg-white/15 backdrop-blur-xl
+        px-5 py-3 rounded-2xl
+        shadow-lg shadow-black/30
+        border border-white/40
+      "
+    >
+      <div className="hud-pill flex items-center gap-1 bg-white/15 border border-white/30 px-3 py-1.5 rounded-xl">
         <img src="/img/fire.png" className="w-6 h-6" />
-        <span className="font-bold">{streak}</span>
+        <span className="font-bold text-white">{streak}</span>
       </div>
-      <div className="hud-pill flex items-center gap-1">
+      <div className="hud-pill flex items-center gap-1 bg-white/15 border border-white/30 px-3 py-1.5 rounded-xl">
         <img src="/img/gem.png" className="w-6 h-6" />
-        <span className="font-bold">{gems}</span>
+        <span className="font-bold text-white">{gems}</span>
       </div>
-      <div className="hud-pill flex items-center gap-1">
+      <div className="hud-pill flex items-center gap-1 bg-white/15 border border-white/30 px-3 py-1.5 rounded-xl">
         <img src="/img/heart.png" className="w-6 h-6" />
-        <span className="font-bold">{hearts}</span>
+        <span className="font-bold text-white">{hearts}</span>
       </div>
     </header>
   );
@@ -35,17 +43,25 @@ function HUD({ hearts = 0, gems = 0, streak = 0 }) {
 
 function Controls({ hard, onHard, sounds, onSounds, onStart, onStop, disabled }) {
   return (
-    <section className="mb-8 bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-6">
+    <section
+      className="
+        mb-8
+        bg-white/15 backdrop-blur-lg
+        border border-white/30
+        rounded-3xl p-6
+        shadow-xl shadow-black/30
+      "
+    >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-[#C5CAFF] flex items-center gap-2">
-          <i className="w-6 h-6 text-[#27E1C1] lucide lucide-play-circle" />
+        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <i className="w-6 h-6 text-[#FFC400] lucide lucide-play-circle" />
           Timed Challenge
         </h2>
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-4 text-sm text-white/90">
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="accent-[#27E1C1]"
+              className="accent-[#FFC400]"
               checked={hard}
               onChange={(e) => onHard(e.target.checked)}
               disabled={disabled}
@@ -55,7 +71,7 @@ function Controls({ hard, onHard, sounds, onSounds, onStart, onStop, disabled })
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="accent-[#27E1C1]"
+              className="accent-[#FFC400]"
               checked={sounds}
               onChange={(e) => onSounds(e.target.checked)}
               disabled={disabled}
@@ -67,14 +83,28 @@ function Controls({ hard, onHard, sounds, onSounds, onStart, onStop, disabled })
       <div className="flex items-center gap-3">
         <button
           onClick={onStart}
-          className="bg-[#27E1C1] text-black font-bold px-4 py-2 rounded-lg disabled:opacity-50"
+          className="
+            bg-gradient-to-r from-[#FFC400] to-[#FF8A3C]
+            text-[#2B1021] font-bold px-4 py-2 rounded-xl
+            shadow-md shadow-[#FFC400]/40
+            disabled:opacity-50 disabled:cursor-not-allowed
+            hover:opacity-90 hover:-translate-y-0.5
+            transition
+          "
           disabled={disabled}
         >
           Start
         </button>
         <button
           onClick={onStop}
-          className="bg-[#3B3B5E] text-white font-semibold px-4 py-2 rounded-lg disabled:opacity-50"
+          className="
+            bg-[#3A2033]/90 text-white font-semibold px-4 py-2 rounded-xl
+            border border-white/25
+            shadow-md shadow-black/40
+            disabled:opacity-50 disabled:cursor-not-allowed
+            hover:bg-[#4A2541]
+            transition
+          "
           disabled={disabled}
         >
           Stop
@@ -89,10 +119,12 @@ function Controls({ hard, onHard, sounds, onSounds, onStart, onStop, disabled })
 function TargetDisplay({ target, flash }) {
   return (
     <div className="flex items-center gap-3 mb-5">
-      <span className="text-lg text-gray-300">Target:</span>
+      <span className="text-lg text-white/80">Target:</span>
       <span
-        className={`text-5xl font-extrabold tracking-wide drop-shadow-lg ${flash ? "animate-ping text-[#27E1C1]" : "text-[#FFC400]"
-          }`}
+        className={`
+          text-5xl font-extrabold tracking-wide drop-shadow-[0_0_12px_rgba(255,196,0,0.7)]
+          ${flash ? "animate-pulse text-[#FFC400]" : "text-[#FFC400]"}
+        `}
       >
         {target || "—"}
       </span>
@@ -103,35 +135,43 @@ function TargetDisplay({ target, flash }) {
 function Feedback({ detected, isCorrect }) {
   return (
     <div
-      className={`mt-4 px-5 py-2 rounded-lg border bg-[#2A2A3C] text-lg font-bold tracking-wide shadow-md flex items-center gap-2 ${detected === "—" ? "" : isCorrect ? "good" : "bad"
-        }`}
-      style={{ borderColor: "#3e3e58" }}
+      className={`
+        mt-4 px-5 py-2 rounded-xl
+        border bg-white/10 text-lg font-bold tracking-wide
+        shadow-md shadow-black/40
+        flex items-center gap-2
+        ${detected === "—" ? "" : isCorrect ? "good" : "bad"}
+      `}
+      style={{ borderColor: "rgba(255,255,255,0.3)" }}
     >
-      <i className="w-5 h-5 text-[#27E1C1] lucide lucide-scan-eye" />
-      Detected:<span className="text-[#27E1C1] ml-1">{detected || "—"}</span>
+      <i className="w-5 h-5 text-[#FFC400] lucide lucide-scan-eye" />
+      <span className="text-white/80">Detected:</span>
+      <span className="text-[#FFE4FB] ml-1">{detected || "—"}</span>
     </div>
   );
 }
 
 function StatsRow({ time, score, streak, target }) {
+  const pill =
+    "hud-pill flex justify-center items-center gap-2 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-sm text-white/90";
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full mt-5">
-      <div className="hud-pill flex justify-center items-center gap-2">
-        <i className="w-4 h-4 text-[#27E1C1] lucide lucide-timer" />
+      <div className={pill}>
+        <i className="w-4 h-4 text-[#FFC400] lucide lucide-timer" />
         <span>Time:</span>
         <span className="font-bold ml-1">{time}</span>s
       </div>
-      <div className="hud-pill flex justify-center items-center gap-2">
+      <div className={pill}>
         <i className="w-4 h-4 text-[#FFC400] lucide lucide-star" />
         <span>Score:</span>
         <span className="font-bold ml-1">{score}</span>
       </div>
-      <div className="hud-pill flex justify-center items-center gap-2">
-        <i className="w-4 h-4 text-[#ff6f3f] lucide lucide-flame" />
+      <div className={pill}>
+        <i className="w-4 h-4 text-[#FF8A3C] lucide lucide-flame" />
         <span>Streak:</span>
         <span className="font-bold ml-1">{streak}</span>
       </div>
-      <div className="hud-pill flex justify-center items-center gap-2">
+      <div className={pill}>
         <i className="w-4 h-4 text-[#FFC400] lucide lucide-target" />
         <span>Target:</span>
         <span className="font-bold text-[#FFC400] ml-1">{target || "—"}</span>
@@ -147,29 +187,44 @@ function FinishModal({ open, data, onClose }) {
   const { reason, score, streak, xp, gems } = data || {};
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-8 w-[350px] text-center shadow-2xl">
-        <h2 className="text-3xl font-extrabold text-[#27E1C1] mb-4">
+      <div
+        className="
+          bg-[#3A2033]/95 border border-white/25
+          rounded-3xl p-8 w-[350px] text-center
+          shadow-2xl shadow-black/70
+        "
+      >
+        <h2 className="text-3xl font-extrabold text-[#FFC400] mb-3 drop-shadow-[0_0_12px_rgba(255,196,0,0.7)]">
           Arcade Finished!
         </h2>
-        <p className="text-gray-300 mb-3">{reason}</p>
-        <div className="bg-[#14142B] rounded-xl p-4 border border-[#2a2a3c] mb-5">
+        <p className="text-white/80 mb-4">{reason}</p>
+
+        <div className="bg-black/30 rounded-2xl p-4 border border-white/15 mb-5">
           <p className="text-lg font-bold text-[#FFC400]">
             Final Score: <span>{score}</span>
           </p>
-          <p className="text-lg font-bold text-[#FFC400]">
+          <p className="text-lg font-bold text-[#FFC400] mt-1">
             Max Streak: <span>{streak}</span>
           </p>
         </div>
+
         {xp != null && (
-          <div className="mb-5">
-            <p className="text-[#27E1C1] font-semibold">Rewards Earned:</p>
-            <p className="text-gray-200">+{xp} XP</p>
-            <p className="text-gray-200">+{gems} Gems</p>
+          <div className="mb-5 text-white/90">
+            <p className="text-[#FFE4FB] font-semibold mb-1">Rewards Earned</p>
+            <p>+{xp} XP</p>
+            <p>+{gems} Gems</p>
           </div>
         )}
+
         <button
           onClick={onClose}
-          className="mt-2 bg-[#27E1C1] text-black font-bold px-5 py-2 rounded-lg hover:bg-[#1dd4b4] transition"
+          className="
+            mt-2 bg-gradient-to-r from-[#FFC400] to-[#FF8A3C]
+            text-[#2B1021] font-bold px-5 py-2 rounded-xl
+            shadow-md shadow-[#FFC400]/40
+            hover:opacity-90 hover:-translate-y-0.5
+            transition
+          "
         >
           Close
         </button>
@@ -291,12 +346,9 @@ export default function Arcade() {
 
     switch (category) {
       case "alphabet":
-        return labels.filter(l => /^[A-Z]$/.test(l)); // A–Z
-      case "numbers":
-        return labels.filter(l => /^[0-9]$/.test(l)); // 0–9
+        return labels.filter((l) => /^[A-Z0-9]$/.test(l)); // letters & numbers
       case "lessons":
-        return labels.filter(l => l.startsWith("L-"));
-      // Example: L-hello, L-thankyou (depends on your label naming)
+        return labels.filter((l) => l.startsWith("L-"));
       case "custom":
         return customPool.length ? customPool : labels;
       case "all":
@@ -486,7 +538,7 @@ export default function Arcade() {
       const newStreak = prev + 1;
       streakRef.current = newStreak;
 
-      const bonus = Math.min(newStreak - 1, 5); // like HTML: small streak bonus
+      const bonus = Math.min(newStreak - 1, 5);
       const gained = 10 + bonus;
 
       setScore((prevScore) => {
@@ -498,12 +550,10 @@ export default function Arcade() {
       return newStreak;
     });
 
-    // reset stability buffer
     predictionBufferRef.current = [];
     consecutiveRef.current = 0;
     lastTopRef.current = "-";
 
-    // pick different target
     setTarget((prevTarget) => {
       if (!labels || !labels.length) return prevTarget;
       let next = randomTarget();
@@ -541,7 +591,6 @@ export default function Arcade() {
       const idx = arr[0].indexOf(Math.max(...arr[0]));
       const label = labels[idx] || "?";
 
-      // buffer / stability
       const buf = predictionBufferRef.current;
       const maxBuf = 9;
       buf.push(label);
@@ -642,21 +691,20 @@ export default function Arcade() {
       const finalStreak = streakRef.current;
 
       try {
-        // ⭐ Save XP/Gems/Run History
         const rewards = await persistRewards(finalScore, finalStreak);
 
-        // ⭐ Auto-check achievements here (NEW)
-        const newlyUnlocked = await checkArcadeAchievements(finalScore, finalStreak);
+        const newlyUnlocked = await checkArcadeAchievements(
+          finalScore,
+          finalStreak
+        );
 
-        // Show each newly unlocked achievement one by one
         if (newlyUnlocked.length > 0) {
           let delay = 0;
           newlyUnlocked.forEach((ach) => {
             setTimeout(() => showAchievementPopup(ach), delay);
-            delay += 2500; // queue
+            delay += 2500;
           });
         }
-
 
         setFinishData({
           reason,
@@ -679,19 +727,16 @@ export default function Arcade() {
     [fetchUserStats, loadLeaderboard, leaderFilter, persistRewards, stopCamera]
   );
 
-
   const startTimer = useCallback(() => {
     setTimeLeft(30);
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    const totalTime = 30;
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timerRef.current);
           timerRef.current = null;
-          // time's up
           finishGame("⏳ Time’s up!");
           return 0;
         }
@@ -710,7 +755,6 @@ export default function Arcade() {
     setGameStarted(true);
     gameStartedRef.current = true;
 
-    // pick initial target
     const pool = getPoolByCategory();
     if (!pool.length) {
       alert("No gestures available in this category.");
@@ -740,6 +784,7 @@ export default function Arcade() {
     resetGameState,
     startCamera,
     startTimer,
+    getPoolByCategory,
   ]);
 
   const end = useCallback(() => {
@@ -761,7 +806,7 @@ export default function Arcade() {
 
   if (!libsReady || modelLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-[#1C1B2E] text-gray-300">
+      <div className="flex flex-col items-center justify-center h-screen bg-[#3A1630] text-gray-200">
         <p className="text-2xl font-semibold mb-2">Loading Gesture Model…</p>
         <p className="text-sm text-gray-400">
           Initializing TensorFlow &amp; MediaPipe
@@ -772,7 +817,7 @@ export default function Arcade() {
 
   if (modelError) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-[#1C1B2E] text-red-400">
+      <div className="flex flex-col items-center justify-center h-screen bg-[#3A1630] text-red-300">
         <p className="text-2xl font-semibold mb-2">Model Load Error</p>
         <p className="text-sm">{modelError}</p>
       </div>
@@ -782,11 +827,42 @@ export default function Arcade() {
   /* ----- MAIN UI ----- */
 
   return (
-    <div className="relative flex min-h-screen font-['Inter'] bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] text-white overflow-hidden">
+    <div
+      className="
+        relative flex min-h-screen font-['Inter'] text-white overflow-hidden
+        bg-[#92487A]
+      "
+    >
+      {/* Background shapes to match homepage/alphabet */}
+      <img
+        src="/bg/upper-left.png"
+        className="absolute top-[-120px] left-[-80px] w-72 opacity-55 pointer-events-none"
+      />
+      <img
+        src="/bg/upper-right.png"
+        className="absolute top-[-140px] right-[-80px] w-80 opacity-65 pointer-events-none"
+      />
+      <img
+        src="/bg/shape-center.png"
+        className="absolute top-[18%] left-[15%] w-72 opacity-25 rotate-[-12deg] pointer-events-none"
+      />
+      <img
+        src="/bg/shape-center.png"
+        className="absolute top-[55%] right-[10%] w-64 opacity-20 rotate-[15deg] pointer-events-none"
+      />
+      <img
+        src="/bg/shape-bottom-left.png"
+        className="absolute bottom-[-150px] left-[-80px] w-80 opacity-45 pointer-events-none"
+      />
+      <img
+        src="/bg/lower-right.png"
+        className="absolute bottom-[-160px] right-[-80px] w-96 opacity-40 pointer-events-none"
+      />
+
       {/* Sidebar */}
       <Sidebar onLogout={handleLogout} />
 
-      {/* 🔥 Achievement Popup appears ABOVE HUD */}
+      {/* Achievement Popup */}
       <AchievementPopup
         visible={popup.visible}
         title={popup.title}
@@ -795,47 +871,67 @@ export default function Arcade() {
 
       <main
         className="
-          flex-1 overflow-y-auto p-6 sm:p-10 relative
-          lg:ml-[250px]
-          mt-[70px] lg:mt-0
+          flex-1 overflow-y-auto p-6 sm:p-10 relative z-10
+          md:ml-16 xl:ml-[250px]
         "
       >
         <HUD hearts={hud.hearts} gems={hud.gems} streak={hud.streak} />
 
-        <h1 className="text-4xl text-center font-extrabold mt-32 mb-6 text-[#27E1C1]">
+        <h1
+          className="
+            text-4xl sm:text-5xl text-center font-extrabold
+            mt-32 mb-6
+            text-[#FFE4FB]
+            drop-shadow-[0_0_14px_rgba(0,0,0,0.4)]
+          "
+        >
           Arcade Mode
         </h1>
 
-        <section className="bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-[#C5CAFF]">Category</h2>
+        {/* Category Section */}
+        <section
+          className="
+            bg-white/15 backdrop-blur-lg
+            border border-white/30
+            rounded-3xl p-6 mb-8
+            shadow-xl shadow-black/30
+          "
+        >
+          <h2 className="text-2xl font-bold mb-4 text-white flex items-center gap-2">
+            Categories
+          </h2>
 
           <div className="flex flex-wrap gap-3">
             {[
               { id: "all", label: "All Signs" },
-              { id: "alphabet", label: "Alphabet (A–Z & Number (1-9))" },
+              { id: "alphabet", label: "Alphabet & Numbers" },
               { id: "lessons", label: "Lesson Signs" },
               { id: "custom", label: "Custom Mix" },
             ].map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setCategory(cat.id)}
-                className={`px-3 py-2 rounded-lg text-sm transition font-semibold ${category === cat.id
-                  ? "bg-[#27E1C1] text-black"
-                  : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
-                  }`}
+                className={`
+                  px-4 py-2 rounded-full text-sm font-semibold transition
+                  ${category === cat.id
+                    ? "bg-gradient-to-r from-[#FFC400] to-[#FF8A3C] text-[#2B1021] shadow-md shadow-[#FFC400]/40"
+                    : "bg-white/10 text-white hover:bg-white/20 border border-white/20"
+                  }
+                `}
               >
                 {cat.label}
               </button>
             ))}
           </div>
 
-          {/* Optional Custom Category UI */}
           {category === "custom" && (
-            <div className="mt-4 p-3 bg-[#14142B] rounded-lg border border-[#2a2a3c]">
-              <p className="text-gray-300 mb-2">Pick custom gestures:</p>
-              <div className="grid grid-cols-3 gap-2 max-h-[150px] overflow-y-auto">
+            <div className="mt-4 p-3 bg-black/25 rounded-2xl border border-white/20">
+              <p className="text-white/80 mb-2 text-sm">
+                Pick custom gestures:
+              </p>
+              <div className="grid grid-cols-3 gap-2 max-h-[150px] overflow-y-auto text-xs">
                 {labels?.map((lbl) => (
-                  <label key={lbl} className="flex items-center gap-2">
+                  <label key={lbl} className="flex items-center gap-2 text-white/90">
                     <input
                       type="checkbox"
                       checked={customPool.includes(lbl)}
@@ -867,7 +963,15 @@ export default function Arcade() {
         />
 
         {/* Gameplay Section */}
-        <section className="mb-10 bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-6">
+        <section
+          className="
+            mb-10
+            bg-white/15 backdrop-blur-lg
+            border border-white/30
+            rounded-3xl p-6
+            shadow-xl shadow-black/40
+          "
+        >
           <div className="flex flex-col items-center relative w-full">
             <TargetDisplay target={target} flash={flash} />
 
@@ -876,7 +980,11 @@ export default function Arcade() {
                 ref={videoRef}
                 autoPlay
                 playsInline
-                className="rounded-xl border-2 border-[#C5CAFF] w-[520px] bg-black shadow-xl"
+                className="
+                  rounded-2xl border-2 border-white/40
+                  w-full max-w-[520px]
+                  bg-black/80 shadow-2xl shadow-black/60
+                "
               />
               <Feedback detected={detected} isCorrect={isCorrect} />
               <StatsRow
@@ -890,10 +998,19 @@ export default function Arcade() {
         </section>
 
         {/* Leaderboard Section */}
-        <section className="mt-10 bg-[#1F1F34] border border-[#2a2a3c] rounded-2xl p-6">
+        <section
+          className="
+            mt-10
+            bg-white/15 backdrop-blur-lg
+            border border-white/30
+            rounded-3xl p-6
+            shadow-xl shadow-black/30
+            mb-16
+          "
+        >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-[#C5CAFF] flex items-center gap-2">
-              <i className="lucide lucide-trophy w-6 h-6 text-[#FFC400]" />{" "}
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <i className="lucide lucide-trophy w-6 h-6 text-[#FFC400]" />
               Leaderboard
             </h2>
             <div className="flex gap-2">
@@ -904,10 +1021,13 @@ export default function Arcade() {
                     setLeaderFilter(f);
                     loadLeaderboard(f);
                   }}
-                  className={`px-3 py-1 rounded-lg text-sm font-semibold transition ${leaderFilter === f
-                    ? "bg-[#27E1C1] text:black text-black"
-                    : "bg-[#2A2A3C] text-gray-300 hover:bg-[#333353]"
-                    }`}
+                  className={`
+                    px-3 py-1 rounded-full text-sm font-semibold transition
+                    ${leaderFilter === f
+                      ? "bg-gradient-to-r from-[#FFC400] to-[#FF8A3C] text-[#2B1021] shadow-md shadow-[#FFC400]/40"
+                      : "bg-white/10 text-white hover:bg-white/20 border border-white/20"
+                    }
+                  `}
                 >
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
@@ -916,48 +1036,56 @@ export default function Arcade() {
           </div>
 
           {leaderLoading ? (
-            <p className="text-gray-400 text-center py-5">
+            <p className="text-gray-200 text-center py-5">
               Loading leaderboard...
             </p>
           ) : leaderRows.length === 0 ? (
-            <p className="text-gray-500 text-center py-5">No records yet.</p>
+            <p className="text-gray-200 text-center py-5">
+              No records yet.
+            </p>
           ) : (
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-[#2a2a3c] text-[#27E1C1]">
-                  <th className="py-2 px-3">Rank</th>
-                  <th className="py-2 px-3">Player</th>
-                  <th className="py-2 px-3">Score</th>
-                  <th className="py-2 px-3">Streak</th>
-                  <th className="py-2 px-3">XP</th>
-                  <th className="py-2 px-3">Gems</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderRows.map((r, i) => (
-                  <tr
-                    key={`${r.user_id}-${i}`}
-                    className={`border-b border-[#2a2a3c] ${r.user_id === currentUserId ? "bg-[#27E1C1]/10" : ""
-                      }`}
-                  >
-                    <td className="py-2 px-3 font-bold text-gray-300">
-                      {i + 1}
-                    </td>
-                    <td className="py-2 px-3 font-semibold text-[#C5CAFF]">
-                      {r.username}
-                    </td>
-                    <td className="py-2 px-3">{r.score}</td>
-                    <td className="py-2 px-3">{r.max_streak}</td>
-                    <td className="py-2 px-3 text-[#27E1C1] font-semibold">
-                      +{r.xp_earned}
-                    </td>
-                    <td className="py-2 px-3 text-[#FFC400] font-semibold">
-                      +{r.gems_earned}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-white/20 text-[#FFC400]">
+                    <th className="py-2 px-3">Rank</th>
+                    <th className="py-2 px-3">Player</th>
+                    <th className="py-2 px-3">Score</th>
+                    <th className="py-2 px-3">Streak</th>
+                    <th className="py-2 px-3">XP</th>
+                    <th className="py-2 px-3">Gems</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {leaderRows.map((r, i) => (
+                    <tr
+                      key={`${r.user_id}-${i}`}
+                      className={`border-b border-white/10 ${r.user_id === currentUserId
+                          ? "bg-[#FFC400]/15"
+                          : "hover:bg-white/5"
+                        }`}
+                    >
+                      <td className="py-2 px-3 font-bold text-white/90">
+                        {i + 1}
+                      </td>
+                      <td className="py-2 px-3 font-semibold text-[#FFE4FB]">
+                        {r.username}
+                      </td>
+                      <td className="py-2 px-3 text-white/90">{r.score}</td>
+                      <td className="py-2 px-3 text-white/90">
+                        {r.max_streak}
+                      </td>
+                      <td className="py-2 px-3 text-[#FFC400] font-semibold">
+                        +{r.xp_earned}
+                      </td>
+                      <td className="py-2 px-3 text-[#FFC400] font-semibold">
+                        +{r.gems_earned}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </section>
       </main>
