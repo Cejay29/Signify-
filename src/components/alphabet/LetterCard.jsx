@@ -3,21 +3,21 @@ export default function LetterCard({ value, onClick }) {
     <button
       onClick={() => onClick?.(value)}
       className="
-        w-16 h-16 sm:w-20 sm:h-20 lg:w-20 lg:h-20
+        w-16 h-16 text-2xl
+        sm:w-20 sm:h-20 sm:text-3xl
         flex items-center justify-center
 
-        text-3xl font-extrabold text-white
-        rounded-2xl
+        bg-[#3A2033] 
+        border-2 border-[#B97DA6]/40 
+        text-[#FFDDEE]
+        
+        rounded-xl font-extrabold
+        transition-all duration-150
 
-        bg-white/20 backdrop-blur-lg
-        border border-white/40
-        shadow-lg shadow-[#FF3F7F]/20
-
-        transition-all duration-200
-        hover:scale-110 hover:shadow-[#FFC400]/40 hover:border-[#FFC400]
+        hover:border-[#FFC400]
+        hover:bg-[#4A2541]
+        hover:shadow-[0_4px_12px_rgba(255,196,0,0.25)]
         active:scale-95
-
-        select-none
       "
     >
       {value}

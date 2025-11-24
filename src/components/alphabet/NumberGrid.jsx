@@ -5,18 +5,15 @@ export default function NumberGrid({ items, onPick }) {
     <div
       className="
         grid
-        grid-cols-4
+        grid-cols-5
         sm:grid-cols-6
         md:grid-cols-8
         lg:grid-cols-10
-        gap-4 sm:gap-5
-
-        mt-4
-        animate-[fadeIn_0.6s_ease-out]
+        gap-3 sm:gap-4
       "
     >
-      {items.map((n) => (
-        <LetterCard key={n} value={n} onClick={onPick} />
+      {items.map((num) => (
+        <LetterCard key={num} value={num} onClick={onPick} />
       ))}
     </div>
   );

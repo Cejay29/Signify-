@@ -9,12 +9,7 @@ export default function AlphabetGrid({ items, onPick }) {
         sm:grid-cols-6
         md:grid-cols-8
         lg:grid-cols-10
-        gap-4 sm:gap-5
-
-        mt-4
-
-        /* fun breathing animation */
-        animate-[fadeIn_0.6s_ease-out]
+        gap-3 sm:gap-4
       "
     >
       {items.map((ch) => (
