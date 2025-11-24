@@ -29,7 +29,7 @@ export default function Sidebar({ onLogout }) {
   ];
 
   /* -----------------------------------------
-      NAV BUTTON
+      REUSABLE NAV BUTTON
   ----------------------------------------- */
   const SidebarButton = ({ label, icon, path }) => {
     const active = pathname === path;
@@ -41,30 +41,38 @@ export default function Sidebar({ onLogout }) {
           setMobileOpen(false);
         }}
         className={`
-          flex items-center transition-all rounded-xl font-medium py-3 select-none
+          flex items-center transition-all rounded-xl font-medium
+          py-3 select-none relative
+          
+          /* Desktop full width */
           xl:w-full xl:px-4 xl:gap-3 xl:justify-start
-          md:w-16 md:justify-center md:px-0
+
+          /* Tablet icon-only */
+          md:w-16 md:justify-center md:px-0 md:gap-0
+
+          /* Mobile drawer */
           ${mobileOpen ? "w-full px-4 gap-3 justify-start" : ""}
 
           ${active
             ? `
-                bg-gradient-to-r from-[#FF3F7F] to-[#FFC400]
-                text-[#2E1426]
-                shadow-[0_0_18px_rgba(255,63,127,0.5)]
-                border border-[#FFD1E3]
+                bg-gradient-to-r from-[#FFC400] to-[#FF3F7F]
+                text-[#1C1B2E]
+                shadow-lg shadow-[#FF3F7F]/40
+                ring-2 ring-white/60
               `
             : `
-                bg-[#3A1E32]/40
-                border border-[#6A3B57]/40
-                text-white/90
-                hover:bg-[#6A3B57]/40 hover:border-[#C27BA0]/40 hover:shadow-md
+                bg-white/15 backdrop-blur-md text-white
+                border border-white/20
+                hover:bg-white/25 hover:shadow-md
               `
           }
         `}
       >
         {icon}
+
         <span className="hidden xl:inline ml-2 text-sm">{label}</span>
-        {mobileOpen && <span className="xl:hidden ml-3 text-sm">{label}</span>}
+
+        {mobileOpen && <span className="xl:hidden block ml-3 text-sm">{label}</span>}
       </button>
     );
   };
@@ -76,15 +84,14 @@ export default function Sidebar({ onLogout }) {
         onClick={() => setMobileOpen(true)}
         className="
           md:hidden fixed top-5 left-5 z-[60]
-          bg-[#3A1E32]/70 backdrop-blur-xl
-          border border-[#6A3B57]
+          bg-white/20 backdrop-blur-xl
+          border border-white/40
           w-12 h-12 rounded-xl flex items-center justify-center shadow-lg
         "
       >
         <Menu className="w-7 h-7 text-white" />
       </button>
 
-      {/* Overlay */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[49] md:hidden"
@@ -92,20 +99,28 @@ export default function Sidebar({ onLogout }) {
         />
       )}
 
-      {/* 🌙 SIDEBAR */}
+      {/* 🌈 SIDEBAR */}
       <aside
         className={`
           fixed top-0 left-0 h-full z-[50]
-          bg-[#2E1426]/80 backdrop-blur-2xl
-          border-r border-[#6A3B57]/40
+          bg-white/10 backdrop-blur-2xl
+          border-r border-white/30
           flex flex-col py-6 transition-all duration-300
 
-          ${mobileOpen ? "translate-x-0 w-[250px]" : "-translate-x-full w-[250px]"}
+          /* Mobile drawer */
+          ${mobileOpen
+            ? "translate-x-0 w-[250px]"
+            : "-translate-x-full w-[250px]"
+          }
+
+          /* Tablet */
           md:translate-x-0 md:w-20 md:px-3
+
+          /* Desktop */
           xl:w-[250px] xl:px-6
         `}
       >
-        {/* ❌ Mobile Close */}
+        {/* ❌ Close (mobile) */}
         {mobileOpen && (
           <button
             onClick={() => setMobileOpen(false)}
@@ -115,16 +130,19 @@ export default function Sidebar({ onLogout }) {
           </button>
         )}
 
-        {/* Logo */}
+        {/* LOGO */}
         <div className="text-center mb-10">
-          <h2 className="hidden xl:block text-4xl font-extrabold text-yellow-300 drop-shadow-xl">
+          {/* Large logo */}
+          <h2 className="hidden xl:block text-4xl font-extrabold text-yellow-300 drop-shadow-md">
             Signify
           </h2>
 
-          <h2 className="hidden md:block xl:hidden text-3xl font-extrabold text-yellow-300">
+          {/* Compact tablet logo */}
+          <h2 className="hidden md:block xl:hidden text-3xl font-extrabold text-yellow-300 drop-shadow-md">
             S
           </h2>
 
+          {/* Mobile drawer logo */}
           {mobileOpen && (
             <h2 className="text-3xl font-extrabold text-yellow-300 drop-shadow-md md:hidden">
               Signify
@@ -132,7 +150,7 @@ export default function Sidebar({ onLogout }) {
           )}
         </div>
 
-        {/* NAV */}
+        {/* NAVIGATION */}
         <nav className="flex flex-col gap-3 mt-2">
           {navItems.map((item) => (
             <SidebarButton key={item.path} {...item} />
@@ -143,9 +161,11 @@ export default function Sidebar({ onLogout }) {
             <button
               onClick={() => setMoreOpen(!moreOpen)}
               className={`
-                flex items-center w-full transition rounded-xl py-3
-                bg-[#3A1E32]/40 border border-[#6A3B57]/40 text-white/90
-                hover:bg-[#6A3B57]/40
+                flex items-center w-full transition rounded-xl
+                py-3
+                bg-white/15 backdrop-blur-md text-white
+                hover:bg-white/25
+
                 md:justify-center
                 xl:px-4 xl:justify-between
                 ${mobileOpen ? "px-4 justify-between" : ""}
@@ -159,7 +179,7 @@ export default function Sidebar({ onLogout }) {
 
               <ChevronDown
                 className={`
-                  w-4 h-4 text-white transition-transform
+                  w-4 h-4 transition-transform
                   ${moreOpen ? "rotate-180" : ""}
                   hidden xl:block
                   ${mobileOpen ? "block" : ""}
@@ -176,8 +196,9 @@ export default function Sidebar({ onLogout }) {
                   }}
                   className="
                     flex items-center gap-2 px-4 py-2 rounded-xl
-                    bg-red-500/10 text-red-300 border border-red-300/20
-                    hover:bg-red-500/20
+                    bg-red-500/20 text-red-300
+                    border border-red-300/40
+                    hover:bg-red-500/30
                   "
                 >
                   <LogOut className="w-5 h-5" />
