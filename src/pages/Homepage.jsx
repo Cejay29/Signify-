@@ -97,24 +97,27 @@ export default function Homepage() {
 
   return (
     <div className="relative flex min-h-screen font-['Inter']
- bg-gradient-to-br from-[#1A1A2E] via-[#1F1F40] to-[#1A1A2E]
- text-white overflow-hidden">
+  bg-gradient-to-br from-[#70385E] via-[#4A2541] to-[#2E1426]
+  text-white overflow-hidden">
 
       {/* 🌟 Very Soft Decorative Background */}
       <img src="/bg/upper-left.png"
-        className="absolute top-[-80px] left-[-60px] w-56 opacity-15 pointer-events-none" />
+        className="absolute top-[-120px] left-[-80px] w-72 opacity-40 pointer-events-none" />
 
       <img src="/bg/upper-right.png"
-        className="absolute top-[-100px] right-[-60px] w-72 opacity-20 pointer-events-none" />
+        className="absolute top-[-140px] right-[-60px] w-96 opacity-45 pointer-events-none" />
 
       <img src="/bg/shape-center.png"
-        className="absolute top-[25%] left-[12%] w-60 opacity-10 rotate-[10deg] pointer-events-none" />
+        className="absolute top-[20%] left-[10%] w-72 opacity-25 rotate-[15deg] pointer-events-none" />
+
+      <img src="/bg/shape-center.png"
+        className="absolute top-[50%] right-[12%] w-64 opacity-20 rotate-[-20deg] pointer-events-none" />
 
       <img src="/bg/shape-bottom-left.png"
-        className="absolute bottom-[-120px] left-[-60px] w-72 opacity-15 pointer-events-none" />
+        className="absolute bottom-[-150px] left-[-80px] w-96 opacity-30 pointer-events-none" />
 
       <img src="/bg/lower-right.png"
-        className="absolute bottom-[-120px] right-[-70px] w-72 opacity-15 pointer-events-none" />
+        className="absolute bottom-[-160px] right-[-60px] w-96 opacity-25 pointer-events-none" />
 
       {/* Sidebar */}
       <Sidebar onLogout={logout} />
