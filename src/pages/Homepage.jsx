@@ -130,7 +130,9 @@ export default function Homepage() {
         "
       >
         {/* HUD */}
-        <header className="fixed top-6 right-8 flex items-center gap-4 bg-white/20 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg border border-white/40 z-20">
+        <header className="fixed top-6 right-8 flex items-center gap-4
+  bg-white/10 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg
+  border border-white/20 z-20">
           <div className="hud-pill flex items-center gap-1">
             <img src="/img/fire.png" className="w-6 h-6" />
             <span>{stats.streak}</span>
