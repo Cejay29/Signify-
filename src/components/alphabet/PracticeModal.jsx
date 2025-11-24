@@ -37,7 +37,7 @@ export default function PracticeModal({ open, onClose, target, onPickTarget }) {
     hardMode: false,
     sounds: true,
     targetPool: labels,
-    onFinish: () => {},
+    onFinish: () => { },
   });
 
   const {
@@ -95,70 +95,63 @@ export default function PracticeModal({ open, onClose, target, onPickTarget }) {
 
   /* -------------------- UI -------------------- */
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
-      {/* Overlay */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={() => {
-          handleStop();
-          onClose();
-        }}
+        onClick={() => { handleStop(); onClose(); }}
       />
 
-      {/* Modal */}
       <div
         className="
-          relative bg-[#2A2A3C] rounded-2xl border border-[#3e3e58] shadow-2xl
-          w-full max-w-[1100px] sm:max-w-[950px] md:max-w-[1000px]
-          p-4 sm:p-6
-          flex flex-col
-          max-h-[90vh]
-          overflow-y-auto
-        "
+      relative w-full max-w-[1100px]
+      bg-white/15 backdrop-blur-2xl
+      rounded-3xl border border-white/30
+      shadow-[0_0_40px_rgba(255,63,127,0.25)]
+      p-6
+      max-h-[90vh] overflow-y-auto
+    "
       >
-        {/* Close */}
+        {/* Close Button */}
         <button
-          onClick={() => {
-            handleStop();
-            onClose();
-          }}
-          className="absolute top-4 right-4 text-gray-300 hover:text-white transition"
+          onClick={() => { handleStop(); onClose(); }}
+          className="absolute top-4 right-4 text-white/70 hover:text-white transition"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
 
-        {/* Top Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Left: Target Preview */}
-          <div className="flex flex-col justify-center">
-            <PracticePreview target={target} />
-          </div>
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+          <PracticePreview target={target} />
 
-          {/* Right: Camera */}
           <div>
-            <h3 className="text-lg font-bold text-[#C5CAFF] mb-2">Webcam</h3>
-
-            {!libsReady || loading ? (
-              <p className="text-gray-400 text-sm mb-3">
-                Loading Gesture Model…
-              </p>
-            ) : modelError ? (
-              <p className="text-red-400 text-sm mb-3">{modelError}</p>
-            ) : null}
+            <h3 className="text-xl font-bold text-white drop-shadow mb-3">
+              Webcam
+            </h3>
 
             <video
               ref={camRef}
               autoPlay
               playsInline
-              className="rounded-xl w-full h-[260px] sm:h-[220px] md:h-[360] object-cover border border-[#C5CAFF] bg-black"
+              className="
+            rounded-2xl border border-[#FFC400]
+            shadow-[0_0_25px_rgba(255,196,0,0.4)]
+            w-full h-[260px] sm:h-[220px] md:h-[300px]
+            bg-black object-cover
+          "
             />
 
-            {/* Buttons */}
-            <div className="flex items-center gap-3 mt-3">
+            <div className="flex gap-3 mt-3">
               <button
                 onClick={handleStart}
                 disabled={!libsReady || !model || cameraBusy || running}
-                className="bg-[#FFC400] text-black font-semibold px-4 py-1.5 rounded-lg disabled:opacity-50"
+                className="
+              px-4 py-2 rounded-xl font-bold
+              bg-gradient-to-r from-[#FFC400] to-[#FF3F7F]
+              text-[#1C1B2E]
+              shadow-lg shadow-[#FF3F7F]/40
+              hover:opacity-90
+              disabled:opacity-40
+            "
               >
                 {cameraBusy ? "Starting…" : running ? "Running" : "Start"}
               </button>
@@ -166,28 +159,23 @@ export default function PracticeModal({ open, onClose, target, onPickTarget }) {
               <button
                 onClick={handleStop}
                 disabled={!running}
-                className="bg-[#3B3B5E] text-white px-4 py-1.5 rounded-lg disabled:opacity-50"
+                className="
+              px-4 py-2 rounded-xl
+              bg-white/20 text-white
+              border border-white/30
+              shadow-inner disabled:opacity-40
+            "
               >
                 Stop
               </button>
             </div>
 
-            {/* Detected Sign */}
             {running && (
-              <div className="text-white mt-3 text-sm">
-                Detected:{" "}
-                <span className="font-semibold">{detected ?? "—"}</span>
-                {target ? (
-                  detected === target ? (
-                    <span className="text-green-400 font-bold ml-2">
-                       Correct
-                    </span>
-                  ) : (
-                    <span className="text-red-400 font-bold ml-2"></span>
-                  )
-                ) : null}
-                {detected === target && target && (
-                  <div className="animate-pulse text-[#27E1C1] font-semibold mt-2">
+              <div className="mt-4 text-white text-sm">
+                Detected: <span className="font-bold">{detected}</span>
+
+                {detected === target && (
+                  <div className="mt-2 text-[#27E1C1] font-semibold animate-pulse">
                     ✋ Perfect Sign!
                   </div>
                 )}

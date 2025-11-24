@@ -1,19 +1,24 @@
 export default function LetterCard({ value, onClick }) {
   return (
     <button
-      className="
-        letter-card 
-        w-16 h-16 text-2xl          /* mobile */
-        sm:w-20 sm:h-20 sm:text-3xl /* tablets */
-        lg:w-20 lg:h-20 lg:text-3xl /* desktop */
-        
-        flex items-center justify-center
-        bg-[#2A2A3C] border-2 border-[#C5CAFF] text-[#FFC400] rounded-xl 
-        font-extrabold transition
-        hover:bg-[#34344A] hover:border-[#FFD849] hover:-translate-y-1
-        hover:shadow-[0_10px_20px_rgba(197,202,255,0.08)]
-      "
       onClick={() => onClick?.(value)}
+      className="
+        w-16 h-16 sm:w-20 sm:h-20 lg:w-20 lg:h-20
+        flex items-center justify-center
+
+        text-3xl font-extrabold text-white
+        rounded-2xl
+
+        bg-white/20 backdrop-blur-lg
+        border border-white/40
+        shadow-lg shadow-[#FF3F7F]/20
+
+        transition-all duration-200
+        hover:scale-110 hover:shadow-[#FFC400]/40 hover:border-[#FFC400]
+        active:scale-95
+
+        select-none
+      "
     >
       {value}
     </button>

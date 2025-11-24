@@ -1,36 +1,38 @@
 export default function PracticePreview({ target }) {
-  // image folder should be: /public/img/signs/a.png etc.
   const src = target
     ? `/img/signs/${String(target).toLowerCase()}.png`
     : "/img/signs/placeholder.png";
 
   return (
-    <div className="flex flex-col items-start md:items-start w-full">
-      <h3 className="text-lg font-bold text-[#C5CAFF] mb-2">Target</h3>
+    <div className="flex flex-col w-full">
+      <h3 className="text-xl font-bold text-white drop-shadow mb-2">
+        Target Sign
+      </h3>
 
-      <span className="pill mb-1 border border-[#C5CAFF] bg-[#2A2A3C] text-[#C5CAFF] rounded-full px-2 py-0.5 text-xs font-bold">
+      <span className="
+        text-xs font-bold uppercase tracking-wide
+        px-3 py-1 rounded-full
+        bg-white/20 text-white border border-white/30
+        w-fit mb-2
+      ">
         Sign:
       </span>
 
-      <span className="text-3xl font-extrabold text-[#FFC400] mb-3">
+      <span className="text-4xl font-extrabold text-[#FFC400] drop-shadow mb-4">
         {target ?? "—"}
       </span>
 
-      <div className="w-full flex justify-center md:justify-start">
+      <div className="flex justify-center md:justify-start">
         <img
           src={src}
           alt={target ?? "preview"}
           className="
-            w-40 h-40 
-            sm:w-44 sm:h-44 
-            md:w-48 md:h-48 
-            lg:w-52 lg:h-52
-            xl:w-56 xl:h-56
-            border-2 border-[#FFC400] 
-            rounded-xl 
-            object-contain 
-            bg-[#1F1F34]
-            transition-all
+            w-44 h-44 sm:w-48 sm:h-48 md:w-56 md:h-56
+            rounded-2xl
+            border-2 border-[#FFC400]
+            shadow-[0_0_25px_rgba(255,196,0,0.4)]
+            bg-white/10 backdrop-blur
+            object-contain
           "
         />
       </div>

@@ -4,12 +4,15 @@ export default function NumberGrid({ items, onPick }) {
   return (
     <div
       className="
-        grid 
-        grid-cols-5           /* mobile */
-        sm:grid-cols-6        /* small tablets */
-        md:grid-cols-8        /* tablets */
-        lg:grid-cols-10       /* desktop */
-        gap-4
+        grid
+        grid-cols-4
+        sm:grid-cols-6
+        md:grid-cols-8
+        lg:grid-cols-10
+        gap-4 sm:gap-5
+
+        mt-4
+        animate-[fadeIn_0.6s_ease-out]
       "
     >
       {items.map((n) => (
