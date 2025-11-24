@@ -782,7 +782,7 @@ export default function Arcade() {
   /* ----- MAIN UI ----- */
 
   return (
-    <div className="flex min-h-screen bg-[#1C1B2E] text-white">
+    <div className="relative flex min-h-screen font-['Inter'] bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693] text-white overflow-hidden">
       {/* Sidebar */}
       <Sidebar onLogout={handleLogout} />
 

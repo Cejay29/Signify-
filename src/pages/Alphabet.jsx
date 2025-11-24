@@ -73,101 +73,119 @@ export default function Alphabet() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#1C1B2E] via-[#1C1B2E] to-[#14142B] font-['Inter']">
+    <div className="relative flex min-h-screen font-['Inter'] overflow-hidden bg-gradient-to-br from-[#450693] via-[#8C00FF] to-[#450693]">
+
+      {/* 🌈 Background Shapes */}
+      <img src="/bg/upper-left.png" className="absolute top-[-120px] left-[-80px] w-72 opacity-60 pointer-events-none" />
+      <img src="/bg/upper-right.png" className="absolute top-[-140px] right-[-80px] w-80 opacity-70 pointer-events-none" />
+      <img src="/bg/shape-center.png" className="absolute top-[180px] left-[25%] w-80 rotate-[-10deg] opacity-30 pointer-events-none" />
+      <img src="/bg/lower-right.png" className="absolute bottom-[-150px] right-[-80px] w-[420px] opacity-30 pointer-events-none" />
+
       {/* 🟨 Sidebar */}
       <Sidebar onLogout={handleLogout} />
 
+      {/* MAIN CONTENT */}
       <main
         className="
-    flex-1 overflow-y-auto p-8
-    md:ml-16        /* Tablet offset (icon-only sidebar width) */
-    xl:ml-[250px]   /* Desktop offset (full sidebar width) */
-  "
+        flex-1 overflow-y-auto p-8 relative z-10
+        md:ml-16
+        xl:ml-[250px]
+      "
       >
-        {/* 🎮 HUD (Streak / Gems / Hearts) */}
+        {/* HUD */}
         <header
           className="
-                        fixed top-4 right-4 
-                        flex items-center gap-3 
-                        bg-[#2A2A3C]/90
-                        px-4 py-2 rounded-xl shadow-lg border border-[#C5CAFF] z-20
-                        backdrop-blur-md
-                    "
+          fixed top-6 right-8 flex items-center gap-4 z-30
+          px-5 py-3 rounded-2xl
+          bg-white/15 backdrop-blur-xl
+          shadow-lg shadow-[#FF3F7F]/30
+          border border-white/40
+        "
         >
-          <div className="hud-pill flex items-center gap-2 border border-[#C5CAFF] px-3 py-1.5 rounded-xl bg-[#2A2A3C]">
+          <div className="hud-pill bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/30">
             <img src="/img/fire.png" className="w-5 h-5" />
-            <span className="font-bold">{stats.streak}</span>
+            <span className="font-bold text-white">{stats.streak}</span>
           </div>
 
-          <div className="hud-pill flex items-center gap-2 border border-[#C5CAFF] px-3 py-1.5 rounded-xl bg-[#2A2A3C]">
+          <div className="hud-pill bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/30">
             <img src="/img/gem.png" className="w-5 h-5" />
-            <span className="font-bold">{stats.gems}</span>
+            <span className="font-bold text-white">{stats.gems}</span>
           </div>
 
-          <div className="hud-pill flex items-center gap-2 border border-[#C5CAFF] px-3 py-1.5 rounded-xl bg-[#2A2A3C]">
+          <div className="hud-pill bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-2 border border-white/30">
             <img src="/img/heart.png" className="w-5 h-5" />
-            <span className="font-bold">{stats.hearts}</span>
+            <span className="font-bold text-white">{stats.hearts}</span>
           </div>
         </header>
 
         {/* TITLE */}
-        <h1 className="text-3xl sm:text-4xl text-center font-extrabold mt-28 sm:mt-32 mb-8 text-[#FFC400]">
+        <h1 className="
+        text-center text-4xl sm:text-5xl font-extrabold 
+        text-[#FFC400] drop-shadow-[0_0_12px_rgba(255,196,0,0.6)]
+        mt-32 mb-10
+        animate-[float_3s_ease-in-out_infinite]
+      ">
           ASL Alphabet & Numbers
         </h1>
 
-        {/* 🟣 Practice Mode Card */}
-        <section className="mb-10 grid lg:grid-cols-2 gap-6">
-          <div
-            className="practice-card bg-gradient-to-br from-[#1F1F34] to-[#26263F]
-                                    border border-[rgba(197,202,255,0.15)] rounded-2xl p-7 shadow-xl"
-          >
+        {/* PRACTICE CARD */}
+        <section className="mb-12">
+          <div className="
+          bg-white/20 backdrop-blur-lg 
+          border border-white/40 
+          rounded-3xl shadow-xl shadow-[#FF3F7F]/20 
+          p-7
+        ">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#C5CAFF] flex items-center gap-2">
-                <span className="text-[#FFC400] text-2xl">✋</span>
-                Practice Mode
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                ✋ Practice Mode
               </h2>
 
-              <span
-                className="pill border border-[#C5CAFF] bg-[#2A2A3C] text-[#C5CAFF]
-                                        rounded-full px-2 py-0.5 text-xs font-bold"
-              >
-                Free practice
+              <span className="
+              text-xs px-3 py-1 rounded-full font-semibold 
+              bg-[#FFC400] text-[#1C1B2E]
+            ">
+                Free Practice
               </span>
             </div>
 
-            <p className="text-gray-300 text-sm leading-relaxed mb-5">
-              Open the practice window and try signing any alphabet or number
-              using your webcam. Pick a sign and the model will verify if your
-              gesture is correct.
+            <p className="text-white/80 text-sm leading-relaxed mb-5">
+              Test your skills! Choose a letter or number and practice signing it
+              using your webcam. The model will verify your hand gestures.
             </p>
 
             <button
               onClick={() => setModalOpen(true)}
-              className="bg-[#FFC400] text-[#1C1B2E] font-bold px-4 py-2 rounded-xl hover:bg-[#ffda66] transition"
+              className="
+              bg-gradient-to-r from-[#FFC400] to-[#FF3F7F]
+              text-[#1C1B2E] font-bold px-5 py-2.5 rounded-xl 
+              shadow-lg shadow-[#FF3F7F]/30
+              hover:opacity-90 transition
+            "
             >
               Open Practice
             </button>
           </div>
         </section>
 
-        {/* 🅰 Alphabet */}
+        {/* ALPHABET */}
         <section className="mb-12">
-          <h3 className="text-2xl font-semibold text-[#C5CAFF] mb-4">
+          <h3 className="text-3xl font-semibold text-white mb-4 drop-shadow">
             Alphabet
           </h3>
           <AlphabetGrid items={alphabet} onPick={openPracticeWith} />
         </section>
 
-        {/* 🔢 Numbers */}
-        <section className="mb-12 pb-10">
-          <h3 className="text-2xl font-semibold text-[#C5CAFF] mb-4">
+        {/* NUMBERS */}
+        <section className="mb-24">
+          <h3 className="text-3xl font-semibold text-white mb-4 drop-shadow">
             Numbers
           </h3>
           <NumberGrid items={numbers} onPick={openPracticeWith} />
         </section>
       </main>
 
-      {/* ✋ Practice Modal */}
+      {/* ✋ PRACTICE MODAL */}
       <PracticeModal
         open={modalOpen}
         onClose={closeModal}
