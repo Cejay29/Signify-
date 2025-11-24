@@ -96,28 +96,37 @@ export default function Homepage() {
   }
 
   return (
-    <div className="relative flex min-h-screen font-['Inter']
-  bg-gradient-to-br from-[#70385E] via-[#4A2541] to-[#2E1426]
-  text-white overflow-hidden">
-
-      {/* 🌟 Very Soft Decorative Background */}
-      <img src="/bg/upper-left.png"
-        className="absolute top-[-120px] left-[-80px] w-72 opacity-40 pointer-events-none" />
-
-      <img src="/bg/upper-right.png"
-        className="absolute top-[-140px] right-[-60px] w-96 opacity-45 pointer-events-none" />
-
-      <img src="/bg/shape-center.png"
-        className="absolute top-[20%] left-[10%] w-72 opacity-25 rotate-[15deg] pointer-events-none" />
-
-      <img src="/bg/shape-center.png"
-        className="absolute top-[50%] right-[12%] w-64 opacity-20 rotate-[-20deg] pointer-events-none" />
-
-      <img src="/bg/shape-bottom-left.png"
-        className="absolute bottom-[-150px] left-[-80px] w-96 opacity-30 pointer-events-none" />
-
-      <img src="/bg/lower-right.png"
-        className="absolute bottom-[-160px] right-[-60px] w-96 opacity-25 pointer-events-none" />
+    <div
+      className="
+      relative flex min-h-screen font-['Inter']
+      bg-[#92487A] text-white overflow-hidden
+    "
+    >
+      {/* 🍇 Same Background Shapes as Arcade & Alphabet */}
+      <img
+        src="/bg/upper-left.png"
+        className="absolute top-[-120px] left-[-80px] w-72 opacity-55 pointer-events-none"
+      />
+      <img
+        src="/bg/upper-right.png"
+        className="absolute top-[-140px] right-[-60px] w-96 opacity-65 pointer-events-none"
+      />
+      <img
+        src="/bg/shape-center.png"
+        className="absolute top-[20%] left-[10%] w-72 opacity-25 rotate-[15deg] pointer-events-none"
+      />
+      <img
+        src="/bg/shape-center.png"
+        className="absolute top-[50%] right-[12%] w-64 opacity-20 rotate-[-20deg] pointer-events-none"
+      />
+      <img
+        src="/bg/shape-bottom-left.png"
+        className="absolute bottom-[-150px] left-[-80px] w-96 opacity-45 pointer-events-none"
+      />
+      <img
+        src="/bg/lower-right.png"
+        className="absolute bottom-[-160px] right-[-60px] w-96 opacity-40 pointer-events-none"
+      />
 
       {/* Sidebar */}
       <Sidebar onLogout={logout} />
@@ -130,9 +139,13 @@ export default function Homepage() {
         "
       >
         {/* HUD */}
-        <header className="fixed top-6 right-8 flex items-center gap-4
-  bg-white/10 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg
-  border border-white/20 z-20">
+        <header
+          className="
+          fixed top-6 right-8 flex items-center gap-4
+          bg-white/15 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg
+          border border-white/30 z-20
+        "
+        >
           <div className="hud-pill flex items-center gap-1">
             <img src="/img/fire.png" className="w-6 h-6" />
             <span>{stats.streak}</span>
@@ -148,11 +161,11 @@ export default function Homepage() {
         </header>
 
         {/* Title */}
-        <h1 className="text-4xl text-center font-extrabold mt-32 mb-8 text-yellow-300 drop-shadow-lg">
+        <h1 className="text-4xl text-center font-extrabold mt-32 mb-8 text-[#FFE4FB] drop-shadow-lg">
           Choose Your Lesson
         </h1>
 
-        {/* LEVEL + LESSON CARDS */}
+        {/* LEVELS + LESSONS */}
         <section className="flex flex-col items-center gap-12 pb-20">
           {levels.map((level, i) => {
             const levelLessons = lessons.filter((l) => l.level_id === level.id);
@@ -179,23 +192,19 @@ export default function Homepage() {
                   w-full max-w-4xl
                   bg-white/15 backdrop-blur-xl
                   p-6 rounded-3xl shadow-2xl border border-white/30
-                  animate-fade-in-up
                 "
               >
-                {/* UNIT HEADER */}
                 <div className="mb-4">
-                  <div className="text-yellow-300 text-sm font-semibold uppercase tracking-wider">
+                  <div className="text-[#FFE4FB] text-sm font-semibold uppercase tracking-wider">
                     Unit {level.order}
                   </div>
                   <div className="text-2xl font-extrabold">{level.title}</div>
 
-                  {/* Progress Bar */}
                   <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden mt-3">
                     <div
-                      className="h-full bg-yellow-300"
+                      className="h-full bg-[#FFC400]"
                       style={{
-                        width: `${(completedCount / levelLessons.length) * 100 || 0
-                          }%`,
+                        width: `${(completedCount / levelLessons.length) * 100 || 0}%`,
                       }}
                     />
                   </div>
@@ -205,7 +214,6 @@ export default function Homepage() {
                   </div>
                 </div>
 
-                {/* LESSON CARDS */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   {levelLessons.map((lesson, idx) => {
                     const done = completed.has(lesson.id);
@@ -250,8 +258,6 @@ export default function Homepage() {
                                 : "Start Lesson"}
                           </span>
                         </div>
-
-                        {/* XP/Gems */}
                         <div className="text-right text-sm font-bold opacity-90">
                           +{lesson.xp_reward} XP
                           <br />+{lesson.gem_reward} Gems
