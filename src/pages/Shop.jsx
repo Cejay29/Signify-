@@ -5,7 +5,7 @@ import { supabase } from "../lib/supabaseClient";
 import Sidebar from "../components/Sidebar";
 import { ShoppingBag, ShoppingCart } from "lucide-react";
 
-const MASCOT = "/img/mascot.png";
+const MASCOT = "/img/big-logo.gif";
 
 let confetti;
 (async () => {
