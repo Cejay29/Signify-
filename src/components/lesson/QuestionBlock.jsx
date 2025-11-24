@@ -7,8 +7,7 @@ export default function QuestionBlock({
 
     let choices = [];
     try {
-        choices =
-            typeof q.choices === "string" ? JSON.parse(q.choices) : q.choices || [];
+        choices = typeof q.choices === "string" ? JSON.parse(q.choices) : q.choices;
     } catch {
         choices = q.choices || [];
     }
@@ -16,20 +15,22 @@ export default function QuestionBlock({
     const handlePick = (choice, btnEl) => {
         const correct = choice === q.answer;
 
-        const buttons =
-            btnEl.parentElement.querySelectorAll("button[data-choice]");
+        const buttons = btnEl.parentElement.querySelectorAll("button[data-choice]");
         buttons.forEach((b) => (b.disabled = true));
 
         buttons.forEach((b) => {
             const val = b.getAttribute("data-choice");
-            if (val === q.answer) b.classList.add("bg-green-500", "text-white");
-            else if (b === btnEl && !correct)
+
+            if (val === q.answer) {
+                b.classList.add("bg-green-500", "text-white");
+            } else if (b === btnEl && !correct) {
                 b.classList.add("bg-red-500", "text-white", "shake");
+            }
         });
 
         if (correct) setCorrectCount((x) => x + 1);
 
-        // Remove old Next
+        // Remove existing Next
         const container = document.getElementById("lesson-container-react");
         const oldNext = container.querySelector(".next-btn-auto");
         if (oldNext) oldNext.remove();
@@ -37,7 +38,7 @@ export default function QuestionBlock({
         const nextBtn = document.createElement("button");
         nextBtn.textContent = "Next →";
         nextBtn.className =
-            "next-btn-auto mt-6 px-6 py-3 bg-[#FFC400] text-black font-bold rounded-full hover:bg-yellow-400";
+            "next-btn-auto mt-6 px-6 py-3 bg-gradient-to-r from-[#FFC400] to-[#FF6AA5] text-[#2E1426] font-bold rounded-full shadow-md hover:opacity-90 transition";
         nextBtn.onclick = next;
 
         container.appendChild(nextBtn);
@@ -45,7 +46,9 @@ export default function QuestionBlock({
 
     return (
         <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6">{q.question}</h2>
+            <h2 className="text-3xl font-bold mb-6 text-[#FFE4FB] drop-shadow">
+                {q.question}
+            </h2>
 
             <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
                 {choices.map((c, i) => {
@@ -55,14 +58,16 @@ export default function QuestionBlock({
                         <button
                             key={i}
                             data-choice={String(c)}
-                            className="bg-[#2a2a3c] rounded-xl p-4 hover:bg-[#FFC400] hover:text-black transition"
+                            className="
+                            bg-white/10 backdrop-blur-xl 
+                            border border-white/20 
+                            rounded-xl p-4 transition 
+                            hover:bg-[#FFC400] hover:text-[#2E1426]
+                            shadow-md shadow-[#FF6AA5]/20"
                             onClick={(e) => handlePick(String(c), e.currentTarget)}
                         >
                             {isImg ? (
-                                <img
-                                    src={String(c)}
-                                    className="rounded w-full h-40 object-contain"
-                                />
+                                <img src={c} className="rounded-lg w-full h-40 object-contain" />
                             ) : (
                                 <span className="text-lg">{String(c)}</span>
                             )}
