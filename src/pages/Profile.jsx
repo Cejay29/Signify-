@@ -161,12 +161,6 @@ export default function Profile() {
               <h2 className="text-3xl font-extrabold text-[#FFE4FB]">{username}</h2>
               <p className="text-white/70">{email}</p>
             </div>
-
-            {/* Mascot */}
-            <img
-              src="/img/big-logo.gif"
-              className="absolute right-[-80px] top-[-10px] w-28 h-28 animate-bounce-slow pointer-events-none"
-            />
           </div>
 
           <hr className="border-white/20 mb-8" />
@@ -201,10 +195,6 @@ export default function Profile() {
             <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-[#FFE4FB] relative">
               <Trophy className="w-6 h-6 text-yellow-300" />
               Achievements
-              <img
-                src="/img/big-logo.gif"
-                className="w-12 h-12 absolute right-[-50px] top-[-5px] animate-bounce pointer-events-none"
-              />
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -239,34 +229,8 @@ export default function Profile() {
 
         </section>
 
-        {/* FLOATING MASCOT */}
-        <img
-          src="/img/big-logo.gif"
-          className="fixed bottom-6 right-6 w-24 h-24 drop-shadow-xl animate-float pointer-events-none"
-        />
-
       </main>
 
-      {/* ANIMATIONS */}
-      <style>
-        {`
-          @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-          }
-          .animate-float {
-            animation: float 3s ease-in-out infinite;
-          }
-
-          @keyframes bounce-slow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-          }
-          .animate-bounce-slow {
-            animation: bounce-slow 2.8s infinite;
-          }
-        `}
-      </style>
     </div>
   );
 }
