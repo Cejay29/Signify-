@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useLessonData from "./lesson/useLessonData";
-import useGestureModel from "./lesson/useGestureModel";
+import useGestureModel from "../hooks/useGestureModel";
 import useGestureEngine from "./lesson/UseGestureEngine";
 import useScoring from "./lesson/useScoring";
 
