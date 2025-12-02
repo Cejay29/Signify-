@@ -5,7 +5,19 @@ export default function useGestureEngine(model, labels) {
     const streamRef = useRef(null);
     const handsRef = useRef(null);
     const cameraRef = useRef(null);
-    const state = useRef({ expected: null, buffer: [], timer: null });
+
+    const state = useRef({
+        expected: null,
+        buffer: [],
+        timer: null
+    });
+
+    /* ---------------- NORMALIZATION (VERY IMPORTANT) ---------------- */
+    function normalizeGloss(str) {
+        if (!str) return "";
+        return str.toString().trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+    }
+    /* ---------------------------------------------------------------- */
 
     function clearTimer() {
         if (state.current.timer) {
@@ -36,29 +48,38 @@ export default function useGestureEngine(model, labels) {
         pred.array().then((arr) => {
             const scores = arr[0];
             const maxIndex = scores.indexOf(Math.max(...scores));
-            state.current.buffer.push(labels[maxIndex]);
+            const predictedLabel = normalizeGloss(labels[maxIndex]);
+
+            state.current.buffer.push(predictedLabel);
         });
     }
 
     async function startGesture(expected, callback) {
-        state.current.expected = expected;
+        state.current.expected = normalizeGloss(expected);   // 🔥 FIXED
         state.current.buffer = [];
 
         clearTimer();
 
         state.current.timer = setTimeout(() => {
             const counts = {};
-            state.current.buffer.forEach((l) => (counts[l] = (counts[l] || 0) + 1));
+            state.current.buffer.forEach((l) => {
+                counts[l] = (counts[l] || 0) + 1;
+            });
 
             const top =
                 Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
 
-            callback(top === expected);
+            // 🔥 FIXED: NORMALIZED COMPARISON
+            const success = normalizeGloss(top) === state.current.expected;
+
+            callback(success);
+
             state.current.expected = null;
             state.current.buffer = [];
             clearTimer();
         }, 1800);
 
+        // Setup MediaPipe
         if (!handsRef.current) {
             handsRef.current = new window.Hands({
                 locateFile: (f) =>
@@ -75,6 +96,7 @@ export default function useGestureEngine(model, labels) {
             handsRef.current.onResults(onResults);
         }
 
+        // Webcam
         const video = videoRef.current;
         streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = streamRef.current;
@@ -86,7 +108,7 @@ export default function useGestureEngine(model, labels) {
                 if (video.readyState >= 2) {
                     await handsRef.current.send({ image: video });
                 }
-            },
+            }
         });
 
         cameraRef.current.start();
@@ -98,6 +120,7 @@ export default function useGestureEngine(model, labels) {
             if (streamRef.current)
                 streamRef.current.getTracks().forEach((t) => t.stop());
         } catch { }
+
         clearTimer();
     }
 
