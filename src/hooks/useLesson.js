@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import useLessonData from "./lesson/useLessonData";
 import useGestureModel from "./useGestureModel";   // <-- FIX your import path
-import useGestureEngine from "./lesson/useGestureEngine";
+import useGestureEngine from "./lesson/UseGestureEngine";
 import useScoring from "./lesson/useScoring";
 import { loadGestureLibraries } from "../utils/libLoader";
 
