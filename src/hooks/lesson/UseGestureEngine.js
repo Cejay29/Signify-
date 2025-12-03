@@ -9,15 +9,16 @@ export default function useGestureEngine(model, labels) {
     const state = useRef({
         expected: null,
         buffer: [],
-        timer: null
+        timer: null,
+        handDetected: false,   // 👈 NEW: detect hand before analyzing
     });
 
-    /* -------- Normalization (Capital letters → lowercase, remove spaces) -------- */
+    /* ---------------- NORMALIZATION ---------------- */
     function normalizeGloss(str) {
         if (!str) return "";
         return str.toString().trim().toLowerCase().replace(/[^a-z0-9]/g, "");
     }
-    /* ---------------------------------------------------------------------------- */
+    /* ----------------------------------------------- */
 
     function clearTimer() {
         if (state.current.timer) {
@@ -32,12 +33,19 @@ export default function useGestureEngine(model, labels) {
         return landmarks.flatMap((p) => [p.x - base.x, p.y - base.y, p.z - base.z]);
     }
 
+    /* ------------------ HAND & PREDICTION ------------------ */
     function onResults(results) {
-        const expected = state.current.expected;
-        if (!expected || !results.multiHandLandmarks) return;
+        if (!state.current.expected || !results.multiHandLandmarks) return;
 
         const hand = results.multiHandLandmarks[0];
+
         if (!hand) return;
+
+        // 👈 NEW: Hand detected → Now start prediction
+        if (!state.current.handDetected) {
+            console.log("✋ Hand detected — starting gesture evaluation...");
+            state.current.handDetected = true;
+        }
 
         const input = normalize(hand);
         if (!input) return;
@@ -48,48 +56,49 @@ export default function useGestureEngine(model, labels) {
         pred.array().then(arr => {
             const scores = arr[0];
             const maxIndex = scores.indexOf(Math.max(...scores));
-
-            const rawLabel = labels[maxIndex];
-            const normalized = normalizeGloss(rawLabel);
-
+            const normalized = normalizeGloss(labels[maxIndex]);
             state.current.buffer.push(normalized);
-
-            // DEBUG LOG
-            console.log("[Predict Raw]:", rawLabel, "| [Normalized]:", normalized);
         });
     }
 
+    /* ------------------ START SESSION ------------------ */
     async function startGesture(expected, callback) {
-        const normalizedExpected = normalizeGloss(expected);
-
-        console.log("🔥 Expected gloss:", expected, "| normalized:", normalizedExpected);
-
-        state.current.expected = normalizedExpected;
+        state.current.expected = normalizeGloss(expected);
         state.current.buffer = [];
+        state.current.handDetected = false;   // 👈 Reset hand detection flag
 
         clearTimer();
 
-        // ⏳ Increase timer from 1800 → 3000ms
-        state.current.timer = setTimeout(() => {
+        // ⏳ Timer will run AFTER a hand is detected
+        state.current.timer = setInterval(() => {
+            if (!state.current.handDetected) {
+                console.log("⏳ Waiting for hand detection...");
+                return;
+            }
+
+            // When detected, stop timer and evaluate
+            clearTimer();
+
             const counts = {};
-            state.current.buffer.forEach(l => counts[l] = (counts[l] || 0) + 1);
+            state.current.buffer.forEach((l) => {
+                counts[l] = (counts[l] || 0) + 1;
+            });
 
-            const top = Object.entries(counts)
-                .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+            const top =
+                Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
 
-            const success = normalizeGloss(top) === normalizedExpected;
+            const success = normalizeGloss(top) === state.current.expected;
 
-            console.log("🟡 Final Prediction:", top, "| Expected:", normalizedExpected);
+            console.log("🟡 Final Prediction:", top, "| Expected:", state.current.expected);
             console.log("🟢 Success:", success);
 
             callback(success);
 
             state.current.expected = null;
             state.current.buffer = [];
-            clearTimer();
-        }, 3000); // 3 seconds
+        }, 3000); // ⏳ Longer timer (3 seconds)
 
-        // Initialize hands only once
+        /* ---------- SETUP MEDIAPIPE ---------- */
         if (!handsRef.current) {
             handsRef.current = new window.Hands({
                 locateFile: (f) =>
@@ -99,14 +108,14 @@ export default function useGestureEngine(model, labels) {
             handsRef.current.setOptions({
                 maxNumHands: 1,
                 minDetectionConfidence: 0.7,
-                minTrackingConfidence: 0.6,
+                minTrackingConfidence: 0.7,
                 modelComplexity: 1,
             });
 
             handsRef.current.onResults(onResults);
         }
 
-        // Webcam setup
+        /* ---------- START CAMERA ---------- */
         const video = videoRef.current;
         streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = streamRef.current;
@@ -124,6 +133,7 @@ export default function useGestureEngine(model, labels) {
         cameraRef.current.start();
     }
 
+    /* ------------------ STOP ------------------ */
     function stop() {
         try {
             if (cameraRef.current?.stop) cameraRef.current.stop();
