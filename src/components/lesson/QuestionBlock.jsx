@@ -30,7 +30,7 @@ export default function QuestionBlock({
 
         if (correct) setCorrectCount((x) => x + 1);
 
-        // Remove existing Next
+        // Remove old Next button if exists
         const container = document.getElementById("lesson-container-react");
         const oldNext = container.querySelector(".next-btn-auto");
         if (oldNext) oldNext.remove();
@@ -75,6 +75,17 @@ export default function QuestionBlock({
                     );
                 })}
             </div>
+
+            {/* ⭐ NEW: SKIP BUTTON */}
+            <button
+                className="
+                mt-8 px-6 py-2 
+                text-sm text-white/80 underline hover:text-white transition
+                "
+                onClick={next}
+            >
+                Skip →
+            </button>
         </div>
     );
 }

@@ -101,6 +101,17 @@ export default function GestureBlock({
                 >
                     Try Gesture
                 </button>
+
+                {/* ⭐ NEW: SKIP BUTTON */}
+                <button
+                    className="
+                    mt-3 px-4 py-2 text-sm 
+                    text-white/80 underline hover:text-white transition
+                    "
+                    onClick={next}
+                >
+                    Skip →
+                </button>
             </div>
         </div>
     );
